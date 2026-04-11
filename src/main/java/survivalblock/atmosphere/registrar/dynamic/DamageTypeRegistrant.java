@@ -8,7 +8,7 @@ package survivalblock.atmosphere.registrar.dynamic;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.damagesource.DamageType;
 
 import java.util.function.Function;
@@ -19,7 +19,7 @@ public class DamageTypeRegistrant extends DynamicRegistrant<DamageType> {
         super(modId, registry);
     }
 
-    protected DamageTypeRegistrant(Function<String, ResourceLocation> idFunction, ResourceKey<? extends Registry<DamageType>> registry) {
+    protected DamageTypeRegistrant(Function<String, Identifier> idFunction, ResourceKey<? extends Registry<DamageType>> registry) {
         super(idFunction, registry);
     }
 
@@ -27,7 +27,7 @@ public class DamageTypeRegistrant extends DynamicRegistrant<DamageType> {
         this(modId, Registries.DAMAGE_TYPE);
     }
 
-    public DamageTypeRegistrant(Function<String, ResourceLocation> idFunction) {
+    public DamageTypeRegistrant(Function<String, Identifier> idFunction) {
         this(idFunction, Registries.DAMAGE_TYPE);
     }
 

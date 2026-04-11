@@ -7,7 +7,7 @@ package survivalblock.atmosphere.registrar;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
@@ -19,7 +19,7 @@ public class BlockEntityTypeRegistrant extends Registrant<BlockEntityType<?>> {
         super(modId, registry);
     }
 
-    protected BlockEntityTypeRegistrant(Function<String, ResourceLocation> idFunction, Registry<BlockEntityType<?>> registry) {
+    protected BlockEntityTypeRegistrant(Function<String, Identifier> idFunction, Registry<BlockEntityType<?>> registry) {
         super(idFunction, registry);
     }
 
@@ -27,7 +27,7 @@ public class BlockEntityTypeRegistrant extends Registrant<BlockEntityType<?>> {
         this(modId, BuiltInRegistries.BLOCK_ENTITY_TYPE);
     }
 
-    public BlockEntityTypeRegistrant(Function<String, ResourceLocation> idFunction) {
+    public BlockEntityTypeRegistrant(Function<String, Identifier> idFunction) {
         this(idFunction, BuiltInRegistries.BLOCK_ENTITY_TYPE);
     }
 

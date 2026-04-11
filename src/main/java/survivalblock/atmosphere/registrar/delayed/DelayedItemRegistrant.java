@@ -8,8 +8,8 @@ package survivalblock.atmosphere.registrar.delayed;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 //? if >=1.21.2
-/*import net.minecraft.resources.ResourceKey;*/
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -22,7 +22,7 @@ public class DelayedItemRegistrant extends DelayedRegistrant<Item> {
         super(modId, registry);
     }
 
-    protected DelayedItemRegistrant(Function<String, ResourceLocation> idFunction, Registry<Item> registry) {
+    protected DelayedItemRegistrant(Function<String, Identifier> idFunction, Registry<Item> registry) {
         super(idFunction, registry);
     }
 
@@ -30,12 +30,12 @@ public class DelayedItemRegistrant extends DelayedRegistrant<Item> {
         this(modId, BuiltInRegistries.ITEM);
     }
 
-    public DelayedItemRegistrant(Function<String, ResourceLocation> idFunction) {
+    public DelayedItemRegistrant(Function<String, Identifier> idFunction) {
         this(idFunction, BuiltInRegistries.ITEM);
     }
 
     public <T extends Item, S extends Item.Properties> T register(String name, Function<S, T> itemFunction, S settings) {
-        T item = itemFunction.apply(/*? >=1.21.2 {*//*(S)*//*?}*/ settings /*? >=1.21.2 {*//*.setId(ResourceKey.create(this.registry.key(), this.idFunction.apply(name))) *//*?}*/);
+        T item = itemFunction.apply(/*? >=1.21.2 {*/(S)/*?}*/ settings /*? >=1.21.2 {*/.setId(ResourceKey.create(this.registry.key(), this.idFunction.apply(name))) /*?}*/);
         return this.register(name, item);
     }
 

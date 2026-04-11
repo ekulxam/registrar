@@ -8,7 +8,7 @@ package survivalblock.atmosphere.registrar;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffect;
 
 import java.util.function.Function;
@@ -19,7 +19,7 @@ public class StatusEffectRegistrant extends Registrant<MobEffect> {
         super(modId, registry);
     }
 
-    protected StatusEffectRegistrant(Function<String, ResourceLocation> idFunction, Registry<MobEffect> registry) {
+    protected StatusEffectRegistrant(Function<String, Identifier> idFunction, Registry<MobEffect> registry) {
         super(idFunction, registry);
     }
 
@@ -27,7 +27,7 @@ public class StatusEffectRegistrant extends Registrant<MobEffect> {
         this(modId, BuiltInRegistries.MOB_EFFECT);
     }
 
-    public StatusEffectRegistrant(Function<String, ResourceLocation> idFunction) {
+    public StatusEffectRegistrant(Function<String, Identifier> idFunction) {
         this(idFunction, BuiltInRegistries.MOB_EFFECT);
     }
 

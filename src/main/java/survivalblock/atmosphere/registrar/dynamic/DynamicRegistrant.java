@@ -11,7 +11,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,16 +23,16 @@ import java.util.function.Function;
  * @see net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint#buildRegistry(RegistrySetBuilder) 
  */
 public class DynamicRegistrant<T> {
-    protected final Function<String, ResourceLocation> idFunction;
+    protected final Function<String, Identifier> idFunction;
     protected final ResourceKey<? extends Registry<T>> registry;
 
     protected final Map<ResourceKey<T>, Function<BootstrapContext<T>, T>> toRegister = new HashMap<>();
 
     public DynamicRegistrant(String modId, ResourceKey<? extends Registry<T>> registry) {
-        this(path -> ResourceLocation.fromNamespaceAndPath(modId, path), registry);
+        this(path -> Identifier.fromNamespaceAndPath(modId, path), registry);
     }
 
-    public DynamicRegistrant(Function<String, ResourceLocation> idFunction, ResourceKey<? extends Registry<T>> registry) {
+    public DynamicRegistrant(Function<String, Identifier> idFunction, ResourceKey<? extends Registry<T>> registry) {
         this.idFunction = idFunction;
         this.registry = registry;
     }

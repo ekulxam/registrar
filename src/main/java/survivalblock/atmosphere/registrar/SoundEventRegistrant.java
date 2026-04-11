@@ -8,7 +8,7 @@ package survivalblock.atmosphere.registrar;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 
 import java.util.function.Function;
@@ -19,7 +19,7 @@ public class SoundEventRegistrant extends Registrant<SoundEvent> {
         super(modId, registry);
     }
 
-    protected SoundEventRegistrant(Function<String, ResourceLocation> idFunction, Registry<SoundEvent> registry) {
+    protected SoundEventRegistrant(Function<String, Identifier> idFunction, Registry<SoundEvent> registry) {
         super(idFunction, registry);
     }
 
@@ -27,15 +27,15 @@ public class SoundEventRegistrant extends Registrant<SoundEvent> {
         this(modId, BuiltInRegistries.SOUND_EVENT);
     }
 
-    public SoundEventRegistrant(Function<String, ResourceLocation> idFunction) {
+    public SoundEventRegistrant(Function<String, Identifier> idFunction) {
         this(idFunction, BuiltInRegistries.SOUND_EVENT);
     }
 
     public SoundEvent register(String name) {
-        return this.register(name, (Function<ResourceLocation, SoundEvent>) SoundEvent::createVariableRangeEvent);
+        return this.register(name, (Function<Identifier, SoundEvent>) SoundEvent::createVariableRangeEvent);
     }
 
-    public SoundEvent register(String name, Function<ResourceLocation, SoundEvent> soundEventFunction) {
+    public SoundEvent register(String name, Function<Identifier, SoundEvent> soundEventFunction) {
         return this.register(name, soundEventFunction.apply(this.idFunction.apply(name)));
     }
 
@@ -43,7 +43,7 @@ public class SoundEventRegistrant extends Registrant<SoundEvent> {
         return this.registerReference(name, SoundEvent::createVariableRangeEvent);
     }
 
-    public Holder.Reference<SoundEvent> registerReference(String name, Function<ResourceLocation, SoundEvent> soundEventFunction) {
+    public Holder.Reference<SoundEvent> registerReference(String name, Function<Identifier, SoundEvent> soundEventFunction) {
         return this.registerReference(name, soundEventFunction.apply(this.idFunction.apply(name)));
     }
 

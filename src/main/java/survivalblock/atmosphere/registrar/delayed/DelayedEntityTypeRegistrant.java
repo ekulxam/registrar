@@ -8,8 +8,8 @@ package survivalblock.atmosphere.registrar.delayed;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 //? if >=1.21.2
-/*import net.minecraft.resources.ResourceKey;*/
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
@@ -21,7 +21,7 @@ public class DelayedEntityTypeRegistrant extends DelayedRegistrant<EntityType<?>
         super(modId, registry);
     }
 
-    protected DelayedEntityTypeRegistrant(Function<String, ResourceLocation> idFunction, Registry<EntityType<?>> registry) {
+    protected DelayedEntityTypeRegistrant(Function<String, Identifier> idFunction, Registry<EntityType<?>> registry) {
         super(idFunction, registry);
     }
 
@@ -29,12 +29,12 @@ public class DelayedEntityTypeRegistrant extends DelayedRegistrant<EntityType<?>
         this(modId, BuiltInRegistries.ENTITY_TYPE);
     }
 
-    public DelayedEntityTypeRegistrant(Function<String, ResourceLocation> idFunction) {
+    public DelayedEntityTypeRegistrant(Function<String, Identifier> idFunction) {
         this(idFunction, BuiltInRegistries.ENTITY_TYPE);
     }
 
     public <T extends Entity> EntityType<T> register(String name, EntityType.Builder<T> builder) {
-        return this.register(name, builder.build(/*? >=1.21.2 {*//*ResourceKey.create(this.registry.key(), this.idFunction.apply(name))*//*?}*/));
+        return this.register(name, builder.build(/*? >=1.21.2 {*/ResourceKey.create(this.registry.key(), this.idFunction.apply(name))/*?}*/));
     }
 
     public <T extends Entity> EntityType<T> register(String name, EntityType<T> entityType) {

@@ -8,7 +8,7 @@ package survivalblock.atmosphere.registrar.delayed;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.function.Function;
 
@@ -18,7 +18,7 @@ public class DelayedDataComponentTypeRegistrant extends DelayedRegistrant<DataCo
         super(modId, registry);
     }
 
-    protected DelayedDataComponentTypeRegistrant(Function<String, ResourceLocation> idFunction, Registry<DataComponentType<?>> registry) {
+    protected DelayedDataComponentTypeRegistrant(Function<String, Identifier> idFunction, Registry<DataComponentType<?>> registry) {
         super(idFunction, registry);
     }
 
@@ -26,7 +26,7 @@ public class DelayedDataComponentTypeRegistrant extends DelayedRegistrant<DataCo
         this(modId, BuiltInRegistries.DATA_COMPONENT_TYPE);
     }
 
-    public DelayedDataComponentTypeRegistrant(Function<String, ResourceLocation> idFunction) {
+    public DelayedDataComponentTypeRegistrant(Function<String, Identifier> idFunction) {
         this(idFunction, BuiltInRegistries.DATA_COMPONENT_TYPE);
     }
 

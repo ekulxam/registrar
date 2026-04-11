@@ -6,7 +6,7 @@
 package survivalblock.atmosphere.registrar.delayed;
 
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import survivalblock.atmosphere.registrar.Registrant;
 
 import java.util.HashMap;
@@ -20,7 +20,7 @@ public class DelayedRegistrant<T> extends Registrant<T> {
         super(modId, registry);
     }
 
-    public DelayedRegistrant(Function<String, ResourceLocation> idFunction, Registry<T> registry) {
+    public DelayedRegistrant(Function<String, Identifier> idFunction, Registry<T> registry) {
         super(idFunction, registry);
     }
 

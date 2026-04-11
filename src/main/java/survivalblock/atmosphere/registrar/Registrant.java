@@ -6,19 +6,19 @@
 package survivalblock.atmosphere.registrar;
 
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.function.Function;
 
 public class Registrant<T> {
-    protected final Function<String, ResourceLocation> idFunction;
+    protected final Function<String, Identifier> idFunction;
     protected final Registry<T> registry;
 
     public Registrant(String modId, Registry<T> registry) {
-        this(path -> ResourceLocation.fromNamespaceAndPath(modId, path), registry);
+        this(path -> Identifier.fromNamespaceAndPath(modId, path), registry);
     }
 
-    public Registrant(Function<String, ResourceLocation> idFunction, Registry<T> registry) {
+    public Registrant(Function<String, Identifier> idFunction, Registry<T> registry) {
         this.idFunction = idFunction;
         this.registry = registry;
     }

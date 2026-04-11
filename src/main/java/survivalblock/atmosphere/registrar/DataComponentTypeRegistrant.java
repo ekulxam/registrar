@@ -8,7 +8,7 @@ package survivalblock.atmosphere.registrar;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.function.Function;
 
@@ -18,7 +18,7 @@ public class DataComponentTypeRegistrant extends Registrant<DataComponentType<?>
         super(modId, registry);
     }
 
-    protected DataComponentTypeRegistrant(Function<String, ResourceLocation> idFunction, Registry<DataComponentType<?>> registry) {
+    protected DataComponentTypeRegistrant(Function<String, Identifier> idFunction, Registry<DataComponentType<?>> registry) {
         super(idFunction, registry);
     }
 
@@ -26,7 +26,7 @@ public class DataComponentTypeRegistrant extends Registrant<DataComponentType<?>
         this(modId, BuiltInRegistries.DATA_COMPONENT_TYPE);
     }
 
-    public DataComponentTypeRegistrant(Function<String, ResourceLocation> idFunction) {
+    public DataComponentTypeRegistrant(Function<String, Identifier> idFunction) {
         this(idFunction, BuiltInRegistries.DATA_COMPONENT_TYPE);
     }
 

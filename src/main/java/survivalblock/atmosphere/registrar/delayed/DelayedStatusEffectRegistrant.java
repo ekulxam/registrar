@@ -8,7 +8,7 @@ package survivalblock.atmosphere.registrar.delayed;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffect;
 
 import java.util.function.Function;
@@ -19,7 +19,7 @@ public class DelayedStatusEffectRegistrant extends DelayedRegistrant<MobEffect> 
         super(modId, registry);
     }
 
-    protected DelayedStatusEffectRegistrant(Function<String, ResourceLocation> idFunction, Registry<MobEffect> registry) {
+    protected DelayedStatusEffectRegistrant(Function<String, Identifier> idFunction, Registry<MobEffect> registry) {
         super(idFunction, registry);
     }
 
@@ -27,7 +27,7 @@ public class DelayedStatusEffectRegistrant extends DelayedRegistrant<MobEffect> 
         this(modId, BuiltInRegistries.MOB_EFFECT);
     }
 
-    public DelayedStatusEffectRegistrant(Function<String, ResourceLocation> idFunction) {
+    public DelayedStatusEffectRegistrant(Function<String, Identifier> idFunction) {
         this(idFunction, BuiltInRegistries.MOB_EFFECT);
     }
 

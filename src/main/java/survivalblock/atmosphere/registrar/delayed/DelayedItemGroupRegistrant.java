@@ -7,7 +7,7 @@ package survivalblock.atmosphere.registrar.delayed;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.CreativeModeTab;
 
 import java.util.function.Function;
@@ -18,7 +18,7 @@ public class DelayedItemGroupRegistrant extends DelayedRegistrant<CreativeModeTa
         super(modId, registry);
     }
 
-    protected DelayedItemGroupRegistrant(Function<String, ResourceLocation> idFunction, Registry<CreativeModeTab> registry) {
+    protected DelayedItemGroupRegistrant(Function<String, Identifier> idFunction, Registry<CreativeModeTab> registry) {
         super(idFunction, registry);
     }
 
@@ -26,7 +26,7 @@ public class DelayedItemGroupRegistrant extends DelayedRegistrant<CreativeModeTa
         this(modId, BuiltInRegistries.CREATIVE_MODE_TAB);
     }
 
-    public DelayedItemGroupRegistrant(Function<String, ResourceLocation> idFunction) {
+    public DelayedItemGroupRegistrant(Function<String, Identifier> idFunction) {
         this(idFunction, BuiltInRegistries.CREATIVE_MODE_TAB);
     }
 

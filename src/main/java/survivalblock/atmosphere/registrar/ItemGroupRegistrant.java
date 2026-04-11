@@ -7,7 +7,7 @@ package survivalblock.atmosphere.registrar;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.CreativeModeTab;
 
 import java.util.function.Function;
@@ -18,7 +18,7 @@ public class ItemGroupRegistrant extends Registrant<CreativeModeTab> {
         super(modId, registry);
     }
 
-    protected ItemGroupRegistrant(Function<String, ResourceLocation> idFunction, Registry<CreativeModeTab> registry) {
+    protected ItemGroupRegistrant(Function<String, Identifier> idFunction, Registry<CreativeModeTab> registry) {
         super(idFunction, registry);
     }
 
@@ -26,7 +26,7 @@ public class ItemGroupRegistrant extends Registrant<CreativeModeTab> {
         this(modId, BuiltInRegistries.CREATIVE_MODE_TAB);
     }
 
-    public ItemGroupRegistrant(Function<String, ResourceLocation> idFunction) {
+    public ItemGroupRegistrant(Function<String, Identifier> idFunction) {
         this(idFunction, BuiltInRegistries.CREATIVE_MODE_TAB);
     }
 

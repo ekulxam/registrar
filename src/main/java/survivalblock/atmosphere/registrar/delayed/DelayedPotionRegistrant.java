@@ -8,7 +8,7 @@ package survivalblock.atmosphere.registrar.delayed;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.alchemy.Potion;
 
 import java.util.function.Function;
@@ -19,7 +19,7 @@ public class DelayedPotionRegistrant extends DelayedRegistrant<Potion> {
         super(modId, registry);
     }
 
-    protected DelayedPotionRegistrant(Function<String, ResourceLocation> idFunction, Registry<Potion> registry) {
+    protected DelayedPotionRegistrant(Function<String, Identifier> idFunction, Registry<Potion> registry) {
         super(idFunction, registry);
     }
 
@@ -27,7 +27,7 @@ public class DelayedPotionRegistrant extends DelayedRegistrant<Potion> {
         this(modId, BuiltInRegistries.POTION);
     }
 
-    public DelayedPotionRegistrant(Function<String, ResourceLocation> idFunction) {
+    public DelayedPotionRegistrant(Function<String, Identifier> idFunction) {
         this(idFunction, BuiltInRegistries.POTION);
     }
 

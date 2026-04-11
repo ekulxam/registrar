@@ -7,7 +7,7 @@ package survivalblock.atmosphere.registrar.delayed;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
@@ -19,7 +19,7 @@ public class DelayedBlockEntityTypeRegistrant extends DelayedRegistrant<BlockEnt
         super(modId, registry);
     }
 
-    protected DelayedBlockEntityTypeRegistrant(Function<String, ResourceLocation> idFunction, Registry<BlockEntityType<?>> registry) {
+    protected DelayedBlockEntityTypeRegistrant(Function<String, Identifier> idFunction, Registry<BlockEntityType<?>> registry) {
         super(idFunction, registry);
     }
 
@@ -27,7 +27,7 @@ public class DelayedBlockEntityTypeRegistrant extends DelayedRegistrant<BlockEnt
         this(modId, BuiltInRegistries.BLOCK_ENTITY_TYPE);
     }
 
-    public DelayedBlockEntityTypeRegistrant(Function<String, ResourceLocation> idFunction) {
+    public DelayedBlockEntityTypeRegistrant(Function<String, Identifier> idFunction) {
         this(idFunction, BuiltInRegistries.BLOCK_ENTITY_TYPE);
     }
 

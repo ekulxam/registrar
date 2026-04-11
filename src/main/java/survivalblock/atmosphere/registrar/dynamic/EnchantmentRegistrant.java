@@ -1,7 +1,7 @@
 /*
  * All Rights Reserved
  *
- * Copyright (c) 2024-present ekulxam
+ * Copyright (c) 2025-present ekulxam
  */
 package survivalblock.atmosphere.registrar.dynamic;
 
@@ -11,7 +11,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -29,7 +29,7 @@ public class EnchantmentRegistrant extends DynamicRegistrant<Enchantment> {
         super(modId, registry);
     }
 
-    protected EnchantmentRegistrant(Function<String, ResourceLocation> idFunction, ResourceKey<? extends Registry<Enchantment>> registry) {
+    protected EnchantmentRegistrant(Function<String, Identifier> idFunction, ResourceKey<? extends Registry<Enchantment>> registry) {
         super(idFunction, registry);
     }
 
@@ -37,7 +37,7 @@ public class EnchantmentRegistrant extends DynamicRegistrant<Enchantment> {
         this(modId, Registries.ENCHANTMENT);
     }
 
-    public EnchantmentRegistrant(Function<String, ResourceLocation> idFunction) {
+    public EnchantmentRegistrant(Function<String, Identifier> idFunction) {
         this(idFunction, Registries.ENCHANTMENT);
     }
 

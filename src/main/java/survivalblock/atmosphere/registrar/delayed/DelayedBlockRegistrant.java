@@ -8,8 +8,8 @@ package survivalblock.atmosphere.registrar.delayed;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 //? if >=1.21.2
-/*import net.minecraft.resources.ResourceKey;*/
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
@@ -21,7 +21,7 @@ public class DelayedBlockRegistrant extends DelayedRegistrant<Block> {
         super(modId, registry);
     }
 
-    protected DelayedBlockRegistrant(Function<String, ResourceLocation> idFunction, Registry<Block> registry) {
+    protected DelayedBlockRegistrant(Function<String, Identifier> idFunction, Registry<Block> registry) {
         super(idFunction, registry);
     }
 
@@ -29,12 +29,12 @@ public class DelayedBlockRegistrant extends DelayedRegistrant<Block> {
         this(modId, BuiltInRegistries.BLOCK);
     }
 
-    public DelayedBlockRegistrant(Function<String, ResourceLocation> idFunction) {
+    public DelayedBlockRegistrant(Function<String, Identifier> idFunction) {
         this(idFunction, BuiltInRegistries.BLOCK);
     }
 
     public <T extends Block, S extends BlockBehaviour.Properties> T register(String name, Function<S, T> blockFunction, S settings) {
-        T block = blockFunction.apply(/*? >=1.21.2 {*//*(S)*//*?}*/ settings /*? >=1.21.2 {*//*.setId(ResourceKey.create(this.registry.key(), this.idFunction.apply(name))) *//*?}*/);
+        T block = blockFunction.apply(/*? >=1.21.2 {*/(S)/*?}*/ settings /*? >=1.21.2 {*/.setId(ResourceKey.create(this.registry.key(), this.idFunction.apply(name))) /*?}*/);
         return this.register(name, block);
     }
 }

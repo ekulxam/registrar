@@ -8,7 +8,7 @@ package survivalblock.atmosphere.registrar.delayed;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 
 import java.util.function.Function;
@@ -19,7 +19,7 @@ public class DelayedAttributeRegistrant extends DelayedRegistrant<Attribute> {
         super(modId, registry);
     }
 
-    protected DelayedAttributeRegistrant(Function<String, ResourceLocation> idFunction, Registry<Attribute> registry) {
+    protected DelayedAttributeRegistrant(Function<String, Identifier> idFunction, Registry<Attribute> registry) {
         super(idFunction, registry);
     }
 
@@ -27,7 +27,7 @@ public class DelayedAttributeRegistrant extends DelayedRegistrant<Attribute> {
         this(modId, BuiltInRegistries.ATTRIBUTE);
     }
 
-    public DelayedAttributeRegistrant(Function<String, ResourceLocation> idFunction) {
+    public DelayedAttributeRegistrant(Function<String, Identifier> idFunction) {
         this(idFunction, BuiltInRegistries.ATTRIBUTE);
     }
 

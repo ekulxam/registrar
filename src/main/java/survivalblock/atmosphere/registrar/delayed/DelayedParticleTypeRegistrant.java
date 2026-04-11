@@ -8,7 +8,7 @@ package survivalblock.atmosphere.registrar.delayed;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.function.Function;
 
@@ -18,7 +18,7 @@ public class DelayedParticleTypeRegistrant extends DelayedRegistrant<ParticleTyp
         super(modId, registry);
     }
 
-    protected DelayedParticleTypeRegistrant(Function<String, ResourceLocation> idFunction, Registry<ParticleType<?>> registry) {
+    protected DelayedParticleTypeRegistrant(Function<String, Identifier> idFunction, Registry<ParticleType<?>> registry) {
         super(idFunction, registry);
     }
 
@@ -26,7 +26,7 @@ public class DelayedParticleTypeRegistrant extends DelayedRegistrant<ParticleTyp
         this(modId, BuiltInRegistries.PARTICLE_TYPE);
     }
 
-    public DelayedParticleTypeRegistrant(Function<String, ResourceLocation> idFunction) {
+    public DelayedParticleTypeRegistrant(Function<String, Identifier> idFunction) {
         this(idFunction, BuiltInRegistries.PARTICLE_TYPE);
     }
 }
