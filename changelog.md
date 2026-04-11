@@ -1,1 +1,2 @@
-Registrar 0.0.1
+Registrar 0.0.2
+- Fix mixins.json issue

@@ -18,7 +18,6 @@
 	"entrypoints": {
 	},
 	"mixins": [
-      "registrant.mixins.json"
 	],
 	"depends": {
 		"fabricloader": "*",
