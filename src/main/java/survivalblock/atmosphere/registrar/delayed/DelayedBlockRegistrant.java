@@ -1,7 +1,7 @@
 /*
  * All Rights Reserved
  *
- * Copyright (c) 2024-present ekulxam
+ * Copyright (c) 2025-present ekulxam
  */
 package survivalblock.atmosphere.registrar.delayed;
 
