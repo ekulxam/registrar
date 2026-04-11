@@ -1,0 +1,36 @@
+{
+	"schemaVersion": 1,
+	"id": "registrar",
+	"version": "${version}",
+	"name": "Registrar",
+	"description": "A Registry Helper",
+	"authors": [
+		"Survivalblock"
+	],
+	"contact": {
+		"homepage": "https://github.com/ekulxam/registrar",
+		"sources": "https://github.com/ekulxam/registrar",
+        "issues": "https://github.com/ekulxam/registrar/issues"
+	},
+	"license": "MIT",
+	"icon": "assets/registrar/icon.png",
+	"environment": "*",
+	"entrypoints": {
+	},
+	"mixins": [
+      "registrant.mixins.json"
+	],
+	"depends": {
+		"fabricloader": "*",
+        "minecraft": "*",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+    "custom": {
+      "modmenu": {
+        "badges": [
+          "library"
+        ]
+      }
+    }
+}
