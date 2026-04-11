@@ -7,7 +7,7 @@ package survivalblock.atmosphere.registrar.delayed;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import survivalblock.atmosphere.atmospheric_api.not_mixin.registrant.Registrant;
+import survivalblock.atmosphere.registrar.Registrant;
 
 import java.util.HashMap;
 import java.util.Map;

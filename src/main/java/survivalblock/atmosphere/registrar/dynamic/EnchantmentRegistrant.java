@@ -16,7 +16,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import org.jetbrains.annotations.Nullable;
-import survivalblock.atmosphere.atmospheric_api.not_mixin.funny.AllowsForChaining;
+import survivalblock.atmosphere.registrar.annotation.AllowsForChaining;
 
 import java.util.Objects;
 import java.util.function.Consumer;

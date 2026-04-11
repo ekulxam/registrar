@@ -12,14 +12,13 @@ import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import survivalblock.atmosphere.atmospheric_api.not_mixin.registrant.Registrant;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
 /**
- * A special {@link Registrant} for dynamic registries.
+ * A special {@link survivalblock.atmosphere.registrar.Registrant} for dynamic registries.
  * {@link DynamicRegistrant#bootstrap(BootstrapContext)} can be used as a {@link RegistrySetBuilder.RegistryBootstrap}
  * @see net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint#buildRegistry(RegistrySetBuilder) 
  */
