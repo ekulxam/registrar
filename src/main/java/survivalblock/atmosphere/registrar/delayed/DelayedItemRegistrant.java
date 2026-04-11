@@ -48,7 +48,7 @@ public class DelayedItemRegistrant extends DelayedRegistrant<Item> {
     }
 
     public <T extends Item, S extends Item.Properties> T register(Block block, Function<S, T> itemFunction, S settings) {
-        T item = this.register(block.builtInRegistryHolder().key().location().getPath(), itemFunction, settings);
+        T item = this.register(block.builtInRegistryHolder().key()./*? <1.21.11 {*/ /*location() *//*?} else {*/ identifier() /*?}*/.getPath(), itemFunction, settings);
         if (item instanceof BlockItem blockItem) {
             blockItem.registerBlocks(Item.BY_BLOCK, blockItem);
         }

@@ -8,7 +8,7 @@ plugins {
     id("dev.kikugie.fletching-table.fabric") version "0.1.0-alpha.22" apply false
     id("com.diffplug.spotless") version "7.0.2"
 }
-stonecutter active "26.1-fabric"
+stonecutter active "1.21.11-fabric"
 
 spotless {
     lineEndings = com.diffplug.spotless.LineEnding.UNIX

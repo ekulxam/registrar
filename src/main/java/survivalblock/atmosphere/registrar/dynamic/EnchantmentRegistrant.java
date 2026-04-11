@@ -111,7 +111,7 @@ public class EnchantmentRegistrant extends DynamicRegistrant<Enchantment> {
 
         @Override
         public Enchantment build(ResourceKey<Enchantment> key) {
-            return Objects.requireNonNull(this.builder).build(key.location());
+            return Objects.requireNonNull(this.builder).build(key./*? <1.21.11 {*/ /*location() *//*?} else {*/ identifier() /*?}*/);
         }
     }
 }
