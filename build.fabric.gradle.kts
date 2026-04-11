@@ -53,6 +53,7 @@ stonecutter {
     }
 }
 
+/*
 fletchingTable {
     mixins.create("main") {
         // Default matches the default value in the annotation
@@ -63,7 +64,7 @@ fletchingTable {
     mixins.all {
         automatic = true
     }
-}
+}*/
 
 tasks.processResources {
     val modVersion = project.version
