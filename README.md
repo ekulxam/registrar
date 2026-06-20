@@ -2,6 +2,26 @@
 
 A registry helper for Minecraft modding
 
+## Adding Registrar To Your Project
+First, fork or download this repository and publish it to your mavenLocal (sorry, I don't have a maven (yet)).
+
+Then, adding the following to your `repositories` block:
+```groovy
+mavenLocal()
+```
+
+If you're using deobfuscated Minecraft:
+```groovy
+api("survivalblock.atmosphere:registrar:${project.registrar_version}") // or implementation
+include("survivalblock.atmosphere:registrar:${project.registrar_version}")
+```
+
+If you're using obfuscated Minecraft:
+```groovy
+modApi("survivalblock.atmosphere:registrar:${project.registrar_version}") // or modImplementation
+include("survivalblock.atmosphere:registrar:${project.registrar_version}")
+```
+
 ## Normal Registrants
 
 To start, create a `Registrant` instance of the type you need, like so:
