@@ -19,6 +19,7 @@ val minecraft : String = if (hasProperty("deps.minecraft")) project.property("de
 base.archivesName = project.property("archives_base_name") as String
 
 repositories {
+    mavenCentral()
 }
 
 fabricApi {
@@ -44,6 +45,10 @@ dependencies {
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation("net.fabricmc.fabric-api:fabric-api:${project.property("deps.fabric_api")}")
+
+    if (stonecutter.eval(minecraft, "<1.21.11")) {
+        modCompileOnly("org.jspecify:jspecify:1.0.0")
+    }
 }
 
 stonecutter {
