@@ -26,10 +26,13 @@
 		"fabric-api": "*"
 	},
     "custom": {
-      "modmenu": {
-        "badges": [
-          "library"
-        ]
-      }
+        "modmenu": {
+            "badges": [
+              "library"
+            ],
+            "links": {
+                "modmenu.discord": "https://discord.gg/JE5bzhnwFV"
+            }
+        }
     }
 }

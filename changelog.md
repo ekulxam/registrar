@@ -1,2 +1,2 @@
-Registrar 0.0.3
-- Fix mixins.json issue for real this time
+Registrar 0.0.4
+- Add `DynamicRegistrant$SingleObjectCreator` and impl class

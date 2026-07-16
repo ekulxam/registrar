@@ -30,9 +30,11 @@ import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -81,6 +83,10 @@ public class DynamicRegistrant<T> {
     }
 
     @SuppressWarnings("unused")
+    public final void bootstrap(RegistrySetBuilder registryBuilder) {
+        registryBuilder.add(this.registry, this::bootstrap);
+    }
+
     public void bootstrap(BootstrapContext<T> registerable) {
         for (Map.Entry<ResourceKey<T>, Function<BootstrapContext<T>, T>> entry : this.toRegister.entrySet()) {
             registerable.register(entry.getKey(), entry.getValue().apply(registerable));
@@ -94,6 +100,11 @@ public class DynamicRegistrant<T> {
         default <U> HolderGetter<U> lookup(ResourceKey<? extends Registry<U>> key) {
             return this.registerable().lookup(key);
         }
+    }
+
+    @SuppressWarnings("unused")
+    public interface SingleObjectCreator<T> extends Creator<T> {
+        void define(T obj);
     }
 
     public abstract class CreatorImpl implements Creator<T> {
@@ -122,5 +133,28 @@ public class DynamicRegistrant<T> {
         }
 
         public abstract T build(ResourceKey<T> key);
+    }
+
+    @SuppressWarnings("unused")
+    public class SingleObjectCreatorImpl extends CreatorImpl implements SingleObjectCreator<T> {
+        @Nullable
+        protected T obj;
+
+        public SingleObjectCreatorImpl(BootstrapContext<T> registerable) {
+            super(registerable);
+        }
+
+        @Override
+        public T build(ResourceKey<T> key) {
+            return Objects.requireNonNull(this.obj);
+        }
+
+        @Override
+        public void define(T obj) {
+            if (this.obj != null) {
+                throw new IllegalStateException("Object " + this.obj + " has already been defined!");
+            }
+            this.obj = obj;
+        }
     }
 }
