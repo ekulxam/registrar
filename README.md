@@ -26,12 +26,12 @@ include("survivalblock.atmosphere:registrar:${project.registrar_version}")
 
 To start, create a `Registrant` instance of the type you need, like so:
 ```java
-private static final BlockRegistrant BLOCK_REGISTRANT = new BlockRegistrant(MyMod.ID);
+private static final BlockRegistrant BLOCK_REGISTRANT = new BlockRegistrant(ExampleMod.MOD_ID);
 ```
 
 If a registrant of the required type does not exist, you can create one!
 ```java
-private static final Registrant RECIPE_SERIALIZER_REGISTRANT = new Registrant(MyMod.ID, BuiltinRegistries.RECIPE_SERIALIZER);
+private static final Registrant RECIPE_SERIALIZER_REGISTRANT = new Registrant(ExampleMod.MOD_ID, BuiltinRegistries.RECIPE_SERIALIZER);
 ```
 Feel free to open an issue to notify me if there is a need to add other common registrants.
 
@@ -50,8 +50,8 @@ ITEM_REGISTRANT.register("name", Item::new, new Item.Properties());
 ## Delayed Registrants
 All normal registrants have a delayed counterpart, which can be found in the `delayed` package.
 
-Delayed registrants are identical to normal registrants, with one exception.
-You must call `DelayedRegistrant#consumeAll` to actually register the objects.
+Delayed registrants are identical to normal registrants, with one exception:
+`DelayedRegistrant#consumeAll` must be called to actually register the objects.
 ```java
 public static void init() {
   REGISTRANT.consumeAll();
@@ -67,6 +67,7 @@ To add the registrants for datagen, override `buildRegistry` in your mod's `Data
 ```java
 @Override
 public void buildRegistry(RegistrySetBuilder registryBuilder) {
-    registryBuilder.addRegistry(REGISTRY_KEY, DYNAMIC_REGISTRANT::bootstrap);
+    DYNAMIC_REGISTRANT.bootstrap(registryBuilder);
 }
 ```
+where `bootstrap` is a shorthand for `registryBuilder.addRegistry(REGISTRY_KEY, DYNAMIC_REGISTRANT::bootstrap);`
