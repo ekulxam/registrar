@@ -34,8 +34,8 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-//? if >=26.2
 import survivalblock.atmosphere.registrar.Registrant;
+//? if >=26.2
 import survivalblock.atmosphere.registrar.annotation.ConstructItem;
 
 //? if >=26.2 {
