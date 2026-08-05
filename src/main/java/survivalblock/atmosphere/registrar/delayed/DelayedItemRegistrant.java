@@ -34,7 +34,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import survivalblock.atmosphere.registrar.Registrant;
 //? if >=26.2
 import survivalblock.atmosphere.registrar.annotation.ConstructItem;
 
@@ -46,7 +45,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 @SuppressWarnings("unused")
-public class DelayedItemRegistrant extends Registrant<Item> {
+public class DelayedItemRegistrant extends DelayedRegistrant<Item> {
     protected DelayedItemRegistrant(String modId, Registry<Item> registry) {
         super(modId, registry);
     }
