@@ -25,6 +25,7 @@ package survivalblock.atmosphere.registrar;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 
 import java.util.function.Function;
 
@@ -42,6 +43,14 @@ public class Registrant<T> {
     }
 
     public <U extends T> U register(String name, U obj) {
-        return Registry.register(this.registry, this.idFunction.apply(name), obj);
+        return this.register(this.createKey(name), obj);
+    }
+
+    public <U extends T> U register(ResourceKey<T> key, U obj) {
+        return Registry.register(this.registry, key, obj);
+    }
+
+    public ResourceKey<T> createKey(String name) {
+        return ResourceKey.create(this.registry.key(), this.idFunction.apply(name));
     }
 }

@@ -25,6 +25,7 @@ package survivalblock.atmosphere.registrar.delayed;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import survivalblock.atmosphere.registrar.Registrant;
 
 import java.util.HashMap;
@@ -32,7 +33,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class DelayedRegistrant<T> extends Registrant<T> {
-    protected final Map<String, T> delayed = new HashMap<>();
+    protected final Map<ResourceKey<T>, T> delayed = new HashMap<>();
 
     public DelayedRegistrant(String modId, Registry<T> registry) {
         super(modId, registry);
@@ -43,13 +44,13 @@ public class DelayedRegistrant<T> extends Registrant<T> {
     }
 
     @Override
-    public <U extends T> U register(String name, U obj) {
-        this.delayed.put(name, obj);
+    public <U extends T> U register(ResourceKey<T> key, U obj) {
+        this.delayed.put(key, obj);
         return obj;
     }
 
-    protected <U extends T> void actuallyRegister(String name, U obj) {
-        super.register(name, obj);
+    protected <U extends T> void actuallyRegister(ResourceKey<T> key, U obj) {
+        super.register(key, obj);
     }
 
     protected void registerAll() {

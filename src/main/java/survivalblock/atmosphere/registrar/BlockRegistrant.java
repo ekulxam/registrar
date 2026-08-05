@@ -25,7 +25,8 @@ package survivalblock.atmosphere.registrar;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-//? if >=1.21.2
+//? if >=26.2
+import net.minecraft.references.BlockItemId;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
@@ -51,8 +52,20 @@ public class BlockRegistrant extends Registrant<Block> {
         this(idFunction, BuiltInRegistries.BLOCK);
     }
 
+    //? if >=26.2
+    @Deprecated(since = "Minecraft 26.2")
     public <T extends Block, S extends BlockBehaviour.Properties> T register(String name, Function<S, T> blockFunction, S settings) {
-        T block = blockFunction.apply(/*? >=1.21.2 {*/(S)/*?}*/ settings /*? >=1.21.2 {*/.setId(ResourceKey.create(this.registry.key(), this.idFunction.apply(name))) /*?}*/);
-        return this.register(name, block);
+        return this.register(this.createKey(name), blockFunction, settings);
+    }
+
+    //? if >=26.2 {
+    public <T extends Block, S extends BlockBehaviour.Properties> T register(BlockItemId blockItemId, Function<S, T> blockFunction, S settings) {
+        return this.register(blockItemId.block(), blockFunction, settings);
+    }
+    //?}
+
+    public <T extends Block, S extends BlockBehaviour.Properties> T register(ResourceKey<Block> key, Function<S, T> blockFunction, S settings) {
+        T block = blockFunction.apply(/*? >=1.21.2 {*/(S)/*?}*/ settings /*? >=1.21.2 {*/.setId(key) /*?}*/);
+        return this.register(key, block);
     }
 }

@@ -107,10 +107,6 @@ loom {
     }
 
     fabricModJsonPath = rootProject.file("src/main/resources/fabric.mod.json")
-
-    /*mixin {
-        useLegacyMixinAp = true
-    }*/
 }
 
 java {

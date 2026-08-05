@@ -3,12 +3,57 @@
 A registry helper for Minecraft modding
 
 ## Adding Registrar To Your Project
-First, fork or download this repository and publish it to your mavenLocal (sorry, I don't have a maven (yet)).
+
+<details>
+  <summary>Modrinth Maven</summary>
+
+If you don't have the Modrinth maven in your `repositories` block, add it like so:
+
+`build.gradle`:
+```groovy
+maven {
+    url("https://api.modrinth.com/maven")
+    content {
+        includeGroupAndSubgroups("maven.modrinth")
+    }
+}
+```
+or `build.gradle.kts`:
+```kotlin
+maven("https://api.modrinth.com/maven") {
+    content {
+        includeGroupAndSubgroups("maven.modrinth")
+    }
+}
+```
+
+Then, add this project to your dependencies.
+
+If you're using deobfuscated Minecraft:
+```groovy
+api("maven.modrinth:registrar:${project.registrar_version}") // or implementation
+include("maven.modrinth:registrar:${project.registrar_version}")
+```
+
+If you're using obfuscated Minecraft:
+```groovy
+modApi("maven.modrinth:registrar:${project.registrar_version}") // or modImplementation
+include("maven.modrinth:registrar:${project.registrar_version}")
+```
+
+</details>
+
+<details>
+  <summary>mavenLocal</summary>
+
+First, fork or download this repository and publish it to your mavenLocal.
 
 Then, adding the following to your `repositories` block:
 ```groovy
 mavenLocal()
 ```
+
+Then, add this project to your dependencies.
 
 If you're using deobfuscated Minecraft:
 ```groovy
@@ -21,6 +66,8 @@ If you're using obfuscated Minecraft:
 modApi("survivalblock.atmosphere:registrar:${project.registrar_version}") // or modImplementation
 include("survivalblock.atmosphere:registrar:${project.registrar_version}")
 ```
+
+</details>
 
 ## Normal Registrants
 
