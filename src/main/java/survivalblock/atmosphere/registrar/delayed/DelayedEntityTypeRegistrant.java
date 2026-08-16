@@ -25,7 +25,6 @@ package survivalblock.atmosphere.registrar.delayed;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-//? if >=1.21.2
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
