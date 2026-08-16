@@ -51,11 +51,23 @@ public class DelayedEntityTypeRegistrant extends DelayedRegistrant<EntityType<?>
         this(idFunction, BuiltInRegistries.ENTITY_TYPE);
     }
 
+    //? if >=26.2
+    @Deprecated(since = "Minecraft 26.2")
     public <T extends Entity> EntityType<T> register(String name, EntityType.Builder<T> builder) {
-        return this.register(name, builder.build(/*? >=1.21.2 {*/ResourceKey.create(this.registry.key(), this.idFunction.apply(name))/*?}*/));
+        return this.register(this.createKey(name), builder);
     }
 
+    public <T extends Entity> EntityType<T> register(ResourceKey<EntityType<?>> key, EntityType.Builder<T> builder) {
+        return super.register(key, builder.build(/*? >=1.21.2 {*/key/*?}*/));
+    }
+
+    //? if >=26.2
+    @Deprecated(since = "Minecraft 26.2")
     public <T extends Entity> EntityType<T> register(String name, EntityType<T> entityType) {
         return super.register(name, entityType);
+    }
+
+    public <T extends Entity> EntityType<T> register(ResourceKey<EntityType<?>> key, EntityType<T> entityType) {
+        return super.register(key, entityType);
     }
 }

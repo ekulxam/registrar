@@ -68,4 +68,15 @@ public class BlockRegistrant extends Registrant<Block> {
         T block = blockFunction.apply(/*? >=1.21.2 {*/(S)/*?}*/ settings /*? >=1.21.2 {*/.setId(key) /*?}*/);
         return this.register(key, block);
     }
+
+    //? if >=26.2 {
+    public BlockItemId createId(String name) {
+        Identifier id = this.idFunction.apply(name);
+        return BlockItemId.create(id, id);
+    }
+
+    public BlockItemId createId(String block, String item) {
+        return BlockItemId.create(this.idFunction.apply(block), this.idFunction.apply(item));
+    }
+    //?}
 }
