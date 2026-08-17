@@ -1,2 +1,2 @@
-Registrar 0.0.7
-- Fix `DelayedItemRegistrant` extending the wrong class
+Registrar 0.0.8
+- Add resource key support for `EntityType` registrants
