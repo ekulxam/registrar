@@ -32,13 +32,12 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import survivalblock.atmosphere.registrar.ItemRegistrant;
+import survivalblock.atmosphere.registrar.shared.IBlockItemRegistrant;
 
-import java.util.Map;
 import java.util.function.Function;
 
 @SuppressWarnings("unused")
-public class DelayedItemRegistrant extends DelayedRegistrant<Item> {
+public class DelayedItemRegistrant extends DelayedRegistrant<Item> implements IBlockItemRegistrant {
     protected DelayedItemRegistrant(String modId, Registry<Item> registry) {
         super(modId, registry);
     }
@@ -92,6 +91,7 @@ public class DelayedItemRegistrant extends DelayedRegistrant<Item> {
 
     //? if >=26.2
     @Deprecated(since = "Minecraft 26.2")
+    @Override
     public <T extends Item, S extends Item.Properties> T register(Block block, Function<S, T> itemFunction, S settings) {
         T item = this.register(block.builtInRegistryHolder().key()./*? <1.21.11 {*/ /*location() *//*?} else {*/ identifier() /*?}*/.getPath(), itemFunction, settings);
         if (item instanceof BlockItem blockItem) {
@@ -101,6 +101,7 @@ public class DelayedItemRegistrant extends DelayedRegistrant<Item> {
     }
 
     //? if >=26.2 {
+    @Override
     public <T extends Item, S extends Item.Properties> T register(BlockItemId id, Block block, Function<S, T> itemFunction, S settings) {
         T item = this.register(id.item(), itemFunction, settings);
         if (item instanceof BlockItem blockItem) {
@@ -109,15 +110,4 @@ public class DelayedItemRegistrant extends DelayedRegistrant<Item> {
         return item;
     }
     //?}
-
-    /**
-     * Uses reflection to add {@link Item}s from {@linkplain Block}s (<26.2) or {@linkplain BlockItemId}s (>=26.2).
-     * Note that this method requires the Blocks to all be registered.
-     * @param clazz the class containing the {@linkplain Block}s (<26.2) or {@linkplain BlockItemId}s (>=26.2)
-     * @param tryAllByDefault true to attempt registration, even if no annotation is present
-     * @return all successfully registered items
-     */
-    public Map<? extends Block, ? extends Item> registerFromAnnotations(Class<?> clazz, boolean tryAllByDefault) {
-        return ItemRegistrant.registerFromAnnotations(clazz, tryAllByDefault, this::register/*? >=26.2 {*/, this::register/*?}*/);
-    }
 }

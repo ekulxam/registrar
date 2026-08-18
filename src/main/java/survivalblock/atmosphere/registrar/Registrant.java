@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 import java.util.function.Function;
 
 public class Registrant<T> {
-    protected static final Logger LOGGER = LoggerFactory.getLogger("Registrar");
+    public static final Logger LOGGER = LoggerFactory.getLogger("Registrar");
 
     protected final Function<String, Identifier> idFunction;
     protected final Registry<T> registry;
