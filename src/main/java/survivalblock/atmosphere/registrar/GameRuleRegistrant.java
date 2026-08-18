@@ -88,5 +88,9 @@ public class GameRuleRegistrant extends Registrant<GameRule<?>> implements IGame
     public static <E extends Enum<E>> E getEnum(GameRules gameRules, GameRule</*? <1.21.11 {*/ /*EnumRule<E> *//*?} else {*/ E /*?}*/> enumRule) {
         return IGameRuleRegistrant.getEnum(gameRules, enumRule);
     }
+
+    static <T /*? <1.21.11 {*/ /*extends GameRules.Value<T> *//*?}*/> T getValue(GameRules gameRules, GameRule<T> rule) {
+        return IGameRuleRegistrant.getValue(gameRules, rule);
+    }
     //~}
 }

@@ -81,7 +81,7 @@ public interface IItemRegistrant extends IRegistrant<Item> {
 
     //? if >=26.2 {
     default <S extends Item.Properties> BlockItem register(BlockItemId id, Block block, S settings) {
-        return this.register(id, block, settings1 -> new BlockItem(block, settings1), settings);
+        return this.register(id, settings1 -> new BlockItem(block, settings1), settings);
     }
     //?}
 
@@ -96,7 +96,7 @@ public interface IItemRegistrant extends IRegistrant<Item> {
     }
 
     //? if >=26.2 {
-    default <T extends Item, S extends Item.Properties> T register(BlockItemId id, Block block, Function<S, T> itemFunction, S settings) {
+    default <T extends Item, S extends Item.Properties> T register(BlockItemId id, Function<S, T> itemFunction, S settings) {
         T item = this.register(id.item(), itemFunction, settings);
         if (item instanceof BlockItem blockItem) {
             blockItem.registerBlocks(Item.BY_BLOCK, blockItem);
@@ -153,7 +153,7 @@ public interface IItemRegistrant extends IRegistrant<Item> {
                     id = null;
                     block = (Block) obj;
                     if (!suppressIdWarnings) {
-                        Registrant.LOGGER.warn("Item {} from block {} in class {} is being registered reflectively without a BlockItemId! This is a deprecated action and will likely not be possible in future versions of Minecraft.", blockItemClass.getName(), block, clazz.getName());
+                        Registrant.LOGGER.warn("Item {} from block {} in class {} is being registered reflectively without a BlockItemId! This is a deprecated (since Minecraft 26.2) action and will likely not be possible in future versions of the game.", blockItemClass.getName(), block, clazz.getName());
                     }
                 } else {
                     continue;
@@ -180,12 +180,12 @@ public interface IItemRegistrant extends IRegistrant<Item> {
                     }
                 };
 
-                //? if >=26.2 {
                 Item item;
+                //? if >=26.2 {
                 if (id == null) {
                     item = this.register(block, creator, settings);
                 } else {
-                    item = this.register(id, block, creator, settings);
+                    item = this.register(id, creator, settings);
                 }
                 //?} else {
                 /*item = this.register(block, creator, settings);

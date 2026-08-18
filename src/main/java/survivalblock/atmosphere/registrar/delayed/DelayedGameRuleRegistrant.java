@@ -66,5 +66,9 @@ public class DelayedGameRuleRegistrant extends DelayedRegistrant<GameRule<?>> im
     public static <E extends Enum<E>> E getEnum(GameRules gameRules, GameRule<E> enumRule) {
         return IGameRuleRegistrant.getEnum(gameRules, enumRule);
     }
+
+    public static <T> T getValue(GameRules gameRules, GameRule<T> rule) {
+        return IGameRuleRegistrant.getValue(gameRules, rule);
+    }
 }
 //?}

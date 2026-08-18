@@ -5,7 +5,7 @@ A registry helper for Minecraft modding
 ## Adding Registrar To Your Project
 
 <details>
-  <summary>Modrinth Maven</summary>
+<summary>Modrinth Maven</summary>
 
 If you don't have the Modrinth maven in your `repositories` block, add it like so:
 
@@ -44,7 +44,7 @@ include("maven.modrinth:registrar:${project.registrar_version}")
 </details>
 
 <details>
-  <summary>mavenLocal</summary>
+<summary>mavenLocal</summary>
 
 First, fork or download this repository and publish it to your mavenLocal.
 
@@ -93,6 +93,7 @@ For example, `ItemRegistrant` has a register method that takes three parameters.
 ITEM_REGISTRANT.register("name", Item::new, new Item.Properties());
 ```
 `ItemRegistrant` is also capable of registering `BlockItem`s via separate `register` overloads.
+For more information, see the [Documentation](#documentation/items).
 
 ## Delayed Registrants
 All normal registrants have a delayed counterpart, which can be found in the `delayed` package.
@@ -119,10 +120,84 @@ public void buildRegistry(RegistrySetBuilder registryBuilder) {
 ```
 where `bootstrap` is a shorthand for `registryBuilder.addRegistry(REGISTRY_KEY, DYNAMIC_REGISTRANT::bootstrap);`
 
+## Special Registrants
+Special registrants are registrants which have no backing `Registry`. They may or may not
+extend `Registrant`. (Note that `GameRuleRegistrant` before 1.21.11 is technically a special
+registrant.)
+
+Currently, this only includes `AttachmentTypeRegistrant`.
+
 ## Documentation
 Registrar provides some javadocs, but if you don't want to download the source jar to avoid my multiversioned comments, read this.
 
 <details>
-  <summary>Game Rules</summary>
+<summary>Attachment Types</summary>
+
+`AttachmentTypeRegistrant` contains overloads to register with the builder or register with method parameters.
 
 </details>
+
+<details>
+<summary>Block Entity Types</summary>
+
+`BlockEntityTypeRegistrant` and `DelayedBlockEntityTypeRegistrant` implement `IBlockEntityTypeRegistrant`,
+which can register `BlockEntityType.Builder`/`FabricBlockEntityTypeBuilder`s depending on the version. It
+can also take the BE's constructor (as a lambda) and a `Block` varargs to construct the `BlockEntityType`.
+
+</details>
+
+<details>
+<summary>Blocks</summary>
+
+`BlockRegistrant` and `DelayedBlockRegistrant` implement `IBlockRegistrant`, which can register `Block`s
+based on a constructor and their `BlockBehaviour$Properties`. Note that `BlockBehaviour$Properties#setId`
+is called for you.
+
+In 26.2, `createId` methods are available to create `BlockItemId`s.
+
+</details>
+
+<details>
+<summary>Game Rules</summary>
+
+Due to `BuiltinRegistries.GAME_RULE` not existing before 1.21.11, `GameRuleRegistrant`'s `registry` is
+null in those versions. Registration in those versions is done via Fabric API's `GameRuleRegistry`, which
+is not a real `Registry`.
+
+`DelayedGameRuleRegistrant` does not exist before 1.21.11 for reasons described above.
+
+Both `GameRuleRegistrant` and `DelayedGameRuleRegistrant` implement `IGameRuleRegistrant`, which contains
+methods to register `GameRules$Key`/`GameRule`s depending on the version. Overloads to register a boolean
+rule exist, but due to the larger variation of ways to construct rules pre-1.21.11, these are not exhaustive.
+It is recommended to make your own helpers as necessary.
+
+`IGameRuleRegistrant` also contains minor multiversion utilities to obtain values from `GameRules`. These
+can also be found in the actual registrants, which perform unboxing for some rules.
+</details>
+
+<div id="documentation/items">
+<details>
+<summary>Items</summary>
+
+`ItemRegistrant` and `DelayedItemRegistrant` implement `IItemRegistrant` (funny double I), which can register
+`Item`s based on a constructor and their `Item$Properties`. Note that `Item$Properties#setId` is called for
+you.
+
+The two `IItemRegistrant`s are also capable of registering `BlockItem`s with other register overloads. In
+addition, reflective registration for `BlockItem`s is also supported with the `ConstructItem` annotation.
+This requires the invocation of `IItemRegistrant#registerFromAnnotations`, which returns a map of the `Block`s
+to registered `Item`s. The class parameter dictates which class's fields to check, while `tryAllByDefault`
+will tell the registrant to construct items even if no annotation is present.
+
+Setting `useBlockTranslation` to true in `ConstructItem` will invoke `useBlockDescriptionPrefix` on the
+`Item$Properties`. You can also exclude the item from being automatically registered with `exclude = true`.
+This is helpful for `BlockItem`s that have more than `Block block, Item.Properties properties` in their
+constructors (such as signs and banners), because these are unsupported by the reflective registration.
+Otherwise, you can specify the class where the constructor is found with `constructor = CustomBlockItem.class`.
+
+`ConstructItem` must be annotated on a `public static` `Block` or `BlockItemId` field. Note that annotating a
+`Block` field in this way beyond 26.2 is deprecated and will result in spammed warnings in your logs unless you
+set `suppressIdWarnings = true` in the annotation.
+
+</details>
+</div>
