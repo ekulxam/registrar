@@ -21,20 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package survivalblock.atmosphere.registrar.shared;
+package survivalblock.atmosphere.registrar.delayed;
 
-import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.crafting.RecipeType;
+import survivalblock.atmosphere.registrar.Registrant;
+import survivalblock.atmosphere.registrar.shared.IRecipeTypeRegistrant;
 
-import java.util.function.Consumer;
+import java.util.function.Function;
 
-public interface IDataComponentTypeRegistrant extends IRegistrant<DataComponentType<?>> {
-    default <T> DataComponentType<T> register(String name, DataComponentType.Builder<T> builder) {
-        return this.register(name, builder.build());
+@SuppressWarnings("unused")
+public class DelayedRecipeTypeRegistrant extends DelayedRegistrant<RecipeType<?>> implements IRecipeTypeRegistrant {
+    protected DelayedRecipeTypeRegistrant(String modId, Registry<RecipeType<?>> registry) {
+        super(modId, registry);
     }
 
-    default <T> DataComponentType<T> register(String name, Consumer<DataComponentType.Builder<T>> consumer) {
-        DataComponentType.Builder<T> builder = DataComponentType.builder();
-        consumer.accept(builder);
-        return this.register(name, builder);
+    protected DelayedRecipeTypeRegistrant(Function<String, Identifier> idFunction, Registry<RecipeType<?>> registry) {
+        super(idFunction, registry);
+    }
+
+    public DelayedRecipeTypeRegistrant(String modId) {
+        this(modId, BuiltInRegistries.RECIPE_TYPE);
+    }
+
+    public DelayedRecipeTypeRegistrant(Function<String, Identifier> idFunction) {
+        this(idFunction, BuiltInRegistries.RECIPE_TYPE);
     }
 }

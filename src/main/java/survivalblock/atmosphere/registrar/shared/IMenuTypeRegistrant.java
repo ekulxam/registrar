@@ -23,18 +23,23 @@
  */
 package survivalblock.atmosphere.registrar.shared;
 
-import net.minecraft.core.component.DataComponentType;
+import net.minecraft.world.flag.FeatureFlag;
+import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
 
-import java.util.function.Consumer;
-
-public interface IDataComponentTypeRegistrant extends IRegistrant<DataComponentType<?>> {
-    default <T> DataComponentType<T> register(String name, DataComponentType.Builder<T> builder) {
-        return this.register(name, builder.build());
+public interface IMenuTypeRegistrant extends IRegistrant<MenuType<?>> {
+    @SuppressWarnings("unused")
+    default <T extends AbstractContainerMenu> MenuType<T> registerSimple(String name, MenuType.MenuSupplier<T> factory) {
+        return this.register(name, new MenuType<>(factory, FeatureFlags.VANILLA_SET));
     }
 
-    default <T> DataComponentType<T> register(String name, Consumer<DataComponentType.Builder<T>> consumer) {
-        DataComponentType.Builder<T> builder = DataComponentType.builder();
-        consumer.accept(builder);
-        return this.register(name, builder);
+    default <T extends AbstractContainerMenu> MenuType<T> register(String name, MenuType.MenuSupplier<T> factory, FeatureFlag... flags) {
+        return this.register(name, factory, FeatureFlags.REGISTRY.subset(flags));
+    }
+
+    default <T extends AbstractContainerMenu> MenuType<T> register(String name, MenuType.MenuSupplier<T> factory, FeatureFlagSet set) {
+        return this.register(name, new MenuType<>(factory, set));
     }
 }

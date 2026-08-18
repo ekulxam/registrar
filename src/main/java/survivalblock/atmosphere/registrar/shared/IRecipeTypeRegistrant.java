@@ -23,18 +23,17 @@
  */
 package survivalblock.atmosphere.registrar.shared;
 
-import net.minecraft.core.component.DataComponentType;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
 
-import java.util.function.Consumer;
-
-public interface IDataComponentTypeRegistrant extends IRegistrant<DataComponentType<?>> {
-    default <T> DataComponentType<T> register(String name, DataComponentType.Builder<T> builder) {
-        return this.register(name, builder.build());
-    }
-
-    default <T> DataComponentType<T> register(String name, Consumer<DataComponentType.Builder<T>> consumer) {
-        DataComponentType.Builder<T> builder = DataComponentType.builder();
-        consumer.accept(builder);
-        return this.register(name, builder);
+public interface IRecipeTypeRegistrant extends IRegistrant<RecipeType<?>> {
+    default <T extends Recipe<?>> RecipeType<T> register(String name) {
+        String id = this.id(name).toString();
+        return register(name, new RecipeType<T>() {
+            @Override
+            public String toString() {
+                return id;
+            }
+        });
     }
 }

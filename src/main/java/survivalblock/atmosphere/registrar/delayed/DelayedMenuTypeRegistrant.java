@@ -21,20 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package survivalblock.atmosphere.registrar.shared;
+package survivalblock.atmosphere.registrar.delayed;
 
-import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.inventory.MenuType;
+import survivalblock.atmosphere.registrar.Registrant;
+import survivalblock.atmosphere.registrar.shared.IMenuTypeRegistrant;
 
-import java.util.function.Consumer;
+import java.util.function.Function;
 
-public interface IDataComponentTypeRegistrant extends IRegistrant<DataComponentType<?>> {
-    default <T> DataComponentType<T> register(String name, DataComponentType.Builder<T> builder) {
-        return this.register(name, builder.build());
+@SuppressWarnings("unused")
+public class DelayedMenuTypeRegistrant extends Registrant<MenuType<?>> implements IMenuTypeRegistrant {
+    protected DelayedMenuTypeRegistrant(String modId, Registry<MenuType<?>> registry) {
+        super(modId, registry);
     }
 
-    default <T> DataComponentType<T> register(String name, Consumer<DataComponentType.Builder<T>> consumer) {
-        DataComponentType.Builder<T> builder = DataComponentType.builder();
-        consumer.accept(builder);
-        return this.register(name, builder);
+    protected DelayedMenuTypeRegistrant(Function<String, Identifier> idFunction, Registry<MenuType<?>> registry) {
+        super(idFunction, registry);
+    }
+
+    public DelayedMenuTypeRegistrant(String modId) {
+        this(modId, BuiltInRegistries.MENU);
+    }
+
+    public DelayedMenuTypeRegistrant(Function<String, Identifier> idFunction) {
+        this(idFunction, BuiltInRegistries.MENU);
     }
 }
