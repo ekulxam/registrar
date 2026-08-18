@@ -23,8 +23,6 @@
  */
 package survivalblock.atmosphere.registrar.delayed;
 
-//? if >=26.2
-import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 //? if >=26.2
@@ -34,14 +32,9 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-//? if >=26.2
-import survivalblock.atmosphere.registrar.annotation.ConstructItem;
+import survivalblock.atmosphere.registrar.ItemRegistrant;
 
-//? if >=26.2 {
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.util.Map;
-//?}
 import java.util.function.Function;
 
 @SuppressWarnings("unused")
@@ -125,88 +118,6 @@ public class DelayedItemRegistrant extends DelayedRegistrant<Item> {
      * @return all successfully registered items
      */
     public Map<? extends Block, ? extends Item> registerFromAnnotations(Class<?> clazz, boolean tryAllByDefault) {
-        ImmutableMap.Builder<Block, Item> builder = ImmutableMap.builder();
-        for (Field field : clazz.getFields()) {
-            try {
-                Class<? extends Item> blockItemClass;
-                boolean useBlockTranslation;
-                //? if >=26.2
-                boolean suppressIdWarnings;
-                if (field.isAnnotationPresent(ConstructItem.class)) {
-                    ConstructItem construct = field.getAnnotation(ConstructItem.class);
-                    if (construct.exclude()) {
-                        continue;
-                    }
-                    blockItemClass = construct.constructor();
-                    useBlockTranslation = construct.useBlockTranslation();
-                    //? if >=26.2
-                    suppressIdWarnings = construct.suppressIdWarnings();
-                } else if (tryAllByDefault) {
-                    blockItemClass = BlockItem.class;
-                    useBlockTranslation = true;
-                    //? if >=26.2
-                    suppressIdWarnings = false;
-                } else {
-                    continue;
-                }
-
-                Object obj = field.get(null);
-                Block block;
-                //? if >=26.2 {
-                BlockItemId id;
-                if (obj instanceof BlockItemId) {
-                    id = (BlockItemId) obj;
-                    block = BuiltInRegistries.BLOCK.getValue(id.block());
-
-                    if (block == null) {
-                        continue;
-                    }
-                } else if (obj instanceof Block) {
-                    id = null;
-                    block = (Block) obj;
-                    if (!suppressIdWarnings) {
-                        LOGGER.warn("Item {} from block {} in class {} is being registered reflectively without a BlockItemId! This is a deprecated action and will likely not be possible in future versions of Minecraft.", blockItemClass.getName(), block, clazz.getName());
-                    }
-                } else {
-                    continue;
-                }
-                //?} else {
-                /*if (!(obj instanceof Block)) {
-                    continue;
-                }
-                block = (Block) obj;
-                *///?}
-
-                Item.Properties settings = new Item.Properties();
-                if (useBlockTranslation) {
-                    settings.useBlockDescriptionPrefix();
-                }
-
-                Constructor<? extends Item> constructor = blockItemClass.getConstructor(Block.class, Item.Properties.class);
-
-                Function<Item.Properties, Item> creator = properties -> {
-                    try {
-                        return constructor.newInstance(block, properties);
-                    } catch (ReflectiveOperationException e) {
-                        throw new RuntimeException(e);
-                    }
-                };
-
-                //? if >=26.2 {
-                Item item;
-                if (id == null) {
-                    item = this.register(block, creator, settings);
-                } else {
-                    item = this.register(id, block, creator, settings);
-                }
-                //?} else {
-                /*item = this.register(block, creator, settings);
-                 *///?}
-
-                builder.put(block, item);
-            } catch (ReflectiveOperationException ignored) {
-            }
-        }
-        return builder.build();
+        return ItemRegistrant.registerFromAnnotations(clazz, tryAllByDefault, this::register/*? >=26.2 {*/, this::register/*?}*/);
     }
 }

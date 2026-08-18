@@ -24,6 +24,9 @@
 package survivalblock.atmosphere.registrar;
 
 import com.google.common.collect.ImmutableMap;
+import com.mojang.datafixers.util.Function3;
+//? if >=26.2
+import com.mojang.datafixers.util.Function4;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 //? if >=26.2
@@ -33,6 +36,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.ApiStatus;
 import survivalblock.atmosphere.registrar.annotation.ConstructItem;
 
 import java.lang.reflect.Constructor;
@@ -116,11 +120,17 @@ public class ItemRegistrant extends Registrant<Item> {
     /**
      * Uses reflection to add {@link Item}s from {@linkplain Block}s (<26.2) or {@linkplain BlockItemId}s (>=26.2).
      * Note that this method requires the Blocks to all be registered.
-     * @param clazz the class containing the {@linkplain Block}s (<26.2) or {@linkplain BlockItemId}s (>=26.2)
+     *
+     * @param clazz           the class containing the {@linkplain Block}s (<26.2) or {@linkplain BlockItemId}s (>=26.2)
      * @param tryAllByDefault true to attempt registration, even if no annotation is present
      * @return all successfully registered items
      */
     public Map<? extends Block, ? extends Item> registerFromAnnotations(Class<?> clazz, boolean tryAllByDefault) {
+        return registerFromAnnotations(clazz, tryAllByDefault, this::register/*? >=26.2 {*/, this::register/*?}*/);
+    }
+    
+    @ApiStatus.Internal
+    public static Map<? extends Block, ? extends Item> registerFromAnnotations(Class<?> clazz, boolean tryAllByDefault, Function3<Block, Function<Item.Properties, Item>, Item.Properties, Item> registerWithoutId/*? >=26.2 {*/, Function4<BlockItemId, Block, Function<Item.Properties, Item>, Item.Properties, Item> registerWithId/*?}*/) {
         ImmutableMap.Builder<Block, Item> builder = ImmutableMap.builder();
         for (Field field : clazz.getFields()) {
             try {
@@ -191,13 +201,13 @@ public class ItemRegistrant extends Registrant<Item> {
                 //? if >=26.2 {
                 Item item;
                 if (id == null) {
-                    item = this.register(block, creator, settings);
+                    item = registerWithoutId.apply(block, creator, settings);
                 } else {
-                    item = this.register(id, block, creator, settings);
+                    item = registerWithId.apply(id, block, creator, settings);
                 }
                 //?} else {
-                /*item = this.register(block, creator, settings);
-                *///?}
+                /*item = registerWithoutId.apply(block, creator, settings);
+                 *///?}
 
                 builder.put(block, item);
             } catch (ReflectiveOperationException ignored) {
