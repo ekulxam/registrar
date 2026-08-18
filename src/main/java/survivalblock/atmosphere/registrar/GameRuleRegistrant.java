@@ -1,27 +1,16 @@
 package survivalblock.atmosphere.registrar;
 
-//? if >=1.21.11 {
-import net.fabricmc.fabric.api.gamerule.v1.GameRuleBuilder;
-//?} else {
-/*import net.fabricmc.fabric.api.gamerule.v1.CustomGameRuleCategory;
-import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
-import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
-import net.fabricmc.fabric.api.gamerule.v1.rule.DoubleRule;
-import net.fabricmc.fabric.api.gamerule.v1.rule.EnumRule;
-*///?}
 import net.minecraft.core.Registry;
-//? if >=1.21.11 {
+//? if >=1.21.11
 import net.minecraft.core.registries.BuiltInRegistries;
-//?} else {
-/*import net.minecraft.resources.ResourceKey;
-*///?}
 import net.minecraft.resources.Identifier;
 //? if <1.21.11 {
 /*import net.minecraft.world.level.GameRules;
 *///?} else {
 import net.minecraft.world.level.gamerules.GameRule;
-import net.minecraft.world.level.gamerules.GameRules;
 //?}
+import net.minecraft.world.level.gamerules.GameRules;
+import survivalblock.atmosphere.registrar.shared.IGameRuleRegistrant;
 
 import java.util.function.Function;
 
@@ -30,7 +19,7 @@ import java.util.function.Function;
  */
 @SuppressWarnings("unused")
 //~ if >=1.21.11 'GameRules.Key<?>' -> 'GameRule<?>' {
-public class GameRuleRegistrant extends Registrant<GameRule<?>> {
+public class GameRuleRegistrant extends Registrant<GameRule<?>> implements IGameRuleRegistrant {
     protected GameRuleRegistrant(String modId, Registry<GameRule<?>> registry) {
         super(modId, registry);
     }
@@ -50,77 +39,27 @@ public class GameRuleRegistrant extends Registrant<GameRule<?>> {
     }
     //~}
 
-    //~ if >=1.21.11 'GameRules.Key<GameRules.BooleanValue>' -> 'GameRule<Boolean>'
-    public GameRule<Boolean> registerBoolean(String name, boolean defaultValue) {
-        //~ if >=1.21.11 'GameRuleFactory.createBooleanRule(' -> 'GameRuleBuilder.forBoolean('
-        return this.register(name, GameRuleBuilder.forBoolean(defaultValue));
-    }
-
-    //~ if >=1.21.11 'GameRules.Key<T>' -> 'GameRule<T>' {
-    //~ if >=1.21.11 'GameRules.Type<T> type' -> 'GameRuleBuilder<T> builder' {
-    public <T /*? <1.21.11 {*/ /*extends GameRules.Value<T> *//*?}*/> GameRule<T> register(String name, GameRuleBuilder<T> builder) {
-    //~}
-    //~}
-        //? <1.21.11
-        //return this.register(name, GameRules.Category.MISC, type);
-        //? >=1.21.11
-        return this.register(name, builder.build());
-    }
-
-    //? if <1.21.11 {
-    /*@Override
-    public ResourceKey<GameRules.Key<?>> createKey(String name) {
-        throw new UnsupportedOperationException("Not allowed before 1.21.11!");
-    }
-
-    @Override
-    public <U extends GameRules.Key<?>> U register(String name, U obj) {
-        throw new UnsupportedOperationException("Not allowed before 1.21.11!");
-    }
-
-    @Override
-    public <U extends GameRules.Key<?>> U register(ResourceKey<GameRules.Key<?>> key, U obj) {
-        throw new UnsupportedOperationException("Not allowed before 1.21.11!");
-    }
-
-    public GameRules.Key<GameRules.BooleanValue> registerBoolean(String name, GameRules.Category category, boolean defaultValue) {
-        return this.register(name, category, GameRuleFactory.createBooleanRule(defaultValue));
-    }
-
-    public GameRules.Key<GameRules.BooleanValue> registerBoolean(String name, CustomGameRuleCategory category, boolean defaultValue) {
-        return this.register(name, category, GameRuleFactory.createBooleanRule(defaultValue));
-    }
-
-    public <T extends GameRules.Value<T>> GameRules.Key<T> register(String name, GameRules.Category category, GameRules.Type<T> type) {
-        return GameRuleRegistry.register(this.idFunction.apply(name).toString(), category, type);
-    }
-
-    public <T extends GameRules.Value<T>> GameRules.Key<T> register(String name, CustomGameRuleCategory category, GameRules.Type<T> type) {
-        return GameRuleRegistry.register(this.idFunction.apply(name).toString(), category, type);
-    }
-    *///?}
-
     //~ if >=1.21.11 'GameRules.Key<' -> 'GameRule<' {
     //~ if >=1.21.11 'GameRules.BooleanValue>' -> 'Boolean>' {
     public static boolean getBoolean(GameRules gameRules, GameRule<Boolean> booleanRule) {
-        return gameRules. /*? <1.21.11 {*/ /*getBoolean(booleanRule) *//*?} else {*/ get(booleanRule) /*?}*/;
+        return IGameRuleRegistrant.getBoolean(gameRules, booleanRule);
     }
     //~}
 
     //~ if >=1.21.11 'GameRules.IntegerValue>' -> 'Integer>' {
     public static int getInteger(GameRules gameRules, GameRule<Integer> integerRule) {
-        return gameRules. /*? <1.21.11 {*/ /*getInt(integerRule) *//*?} else {*/ get(integerRule) /*?}*/;
+        return IGameRuleRegistrant.getInteger(gameRules, integerRule);
     }
     //~}
 
     //~ if >=1.21.11 'DoubleRule>' -> 'Double>' {
     public static double getDouble(GameRules gameRules, GameRule<Double> doubleRule) {
-        return gameRules. /*? <1.21.11 {*/ /*getRule(doubleRule).get() *//*?} else {*/ get(doubleRule) /*?}*/;
+        return IGameRuleRegistrant.getDouble(gameRules, doubleRule);
     }
     //~}
-    
+
     public static <E extends Enum<E>> E getEnum(GameRules gameRules, GameRule</*? <1.21.11 {*/ /*EnumRule<E> *//*?} else {*/ E /*?}*/> enumRule) {
-        return gameRules. /*? <1.21.11 {*/ /*getRule(enumRule).get() *//*?} else {*/ get(enumRule) /*?}*/;
+        return IGameRuleRegistrant.getEnum(gameRules, enumRule);
     }
     //~}
 }
