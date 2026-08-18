@@ -127,8 +127,8 @@ public interface IGameRuleRegistrant extends IRegistrant<GameRule<?>> {
     }
 
     static <T /*? <1.21.11 {*/ /*extends GameRules.Value<T> *//*?}*/> T getValue(GameRules gameRules, GameRule<T> rule) {
-        //~ if >=1.21.11 'getRule(enumRule).get()' -> 'get(rule)'
-        return gameRules.getRule(rule);
+        //~ if >=1.21.11 'getRule(rule)' -> 'get(rule)'
+        return gameRules.get(rule);
     }
     //~}
 }
