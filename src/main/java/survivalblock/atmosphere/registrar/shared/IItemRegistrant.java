@@ -64,12 +64,12 @@ public interface IItemRegistrant extends IRegistrant<Item> {
     //? if >=26.2
     @Deprecated(since = "Minecraft 26.2")
     default BlockItem register(Block block) {
-        return this.register(block, new Item.Properties());
+        return this.register(block, new Item.Properties()/*? >=1.21.2 {*/.useBlockDescriptionPrefix()/*?}*/);
     }
 
     //? if >=26.2 {
     default BlockItem register(BlockItemId id, Block block) {
-        return this.register(id, block, new Item.Properties());
+        return this.register(id, block, new Item.Properties().useBlockDescriptionPrefix());
     }
     //?}
 
@@ -117,6 +117,7 @@ public interface IItemRegistrant extends IRegistrant<Item> {
         for (Field field : clazz.getFields()) {
             try {
                 Class<? extends Item> blockItemClass;
+                //? if >1.21.1
                 boolean useBlockTranslation;
                 //? if >=26.2
                 boolean suppressIdWarnings;
@@ -126,11 +127,13 @@ public interface IItemRegistrant extends IRegistrant<Item> {
                         continue;
                     }
                     blockItemClass = construct.constructor();
+                    //? if >1.21.1
                     useBlockTranslation = construct.useBlockTranslation();
                     //? if >=26.2
                     suppressIdWarnings = construct.suppressIdWarnings();
                 } else if (tryAllByDefault) {
                     blockItemClass = BlockItem.class;
+                    //? if >1.21.1
                     useBlockTranslation = true;
                     //? if >=26.2
                     suppressIdWarnings = false;
@@ -166,9 +169,11 @@ public interface IItemRegistrant extends IRegistrant<Item> {
                 *///?}
 
                 Item.Properties settings = new Item.Properties();
+                //? if >1.21.1 {
                 if (useBlockTranslation) {
                     settings.useBlockDescriptionPrefix();
                 }
+                //?}
 
                 Constructor<? extends Item> constructor = blockItemClass.getConstructor(Block.class, Item.Properties.class);
 

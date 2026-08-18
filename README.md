@@ -190,10 +190,13 @@ to registered `Item`s. The class parameter dictates which class's fields to chec
 will tell the registrant to construct items even if no annotation is present.
 
 Setting `useBlockTranslation` to true in `ConstructItem` will invoke `useBlockDescriptionPrefix` on the
-`Item$Properties`. You can also exclude the item from being automatically registered with `exclude = true`.
-This is helpful for `BlockItem`s that have more than `Block block, Item.Properties properties` in their
-constructors (such as signs and banners), because these are unsupported by the reflective registration.
-Otherwise, you can specify the class where the constructor is found with `constructor = CustomBlockItem.class`.
+`Item$Properties`. This isn't necessary in 1.21.1, because it is [determined by `BlockItem#getDescriptionId`](https://mcsrc.dev/1/1.21.1/net/minecraft/world/item/BlockItem#L181).
+
+You can also exclude the item from being automatically registered with `exclude = true`. This is helpful when
+manual registration is required for `BlockItem`s that have more than `Block block, Item.Properties properties`
+in their  constructors (such as signs and banners), because these are unsupported by the reflective registration.
+For classes with a constructor with those parameters, you can specify the class with
+`constructor = CustomBlockItem.class`.
 
 `ConstructItem` must be annotated on a `public static` `Block` or `BlockItemId` field. Note that annotating a
 `Block` field in this way beyond 26.2 is deprecated and will result in spammed warnings in your logs unless you

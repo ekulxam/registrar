@@ -7,4 +7,5 @@ Registrar 0.1.0
   - This change affects registrants for attributes, block entities, blocks, data component types, entity types, game rules, items, potions, sound events, and status effects.
 - Reflective `BlockItem` registration is now available pre-26.2
   - Add `suppressIdWarnings` to `ConstructItem` for 26.2
+- `BlockItem`s now use block translation prefix by default to match 1.21.1
 - Documentation in README

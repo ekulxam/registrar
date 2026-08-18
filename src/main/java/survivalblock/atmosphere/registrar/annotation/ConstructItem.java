@@ -40,10 +40,12 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface ConstructItem {
+    //? if >1.21.1 {
     /**
      * @see net.minecraft.world.item.Item.Properties#useBlockDescriptionPrefix()
      */
     boolean useBlockTranslation() default true;
+    //?}
 
     /**
      *
