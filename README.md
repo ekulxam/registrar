@@ -118,3 +118,11 @@ public void buildRegistry(RegistrySetBuilder registryBuilder) {
 }
 ```
 where `bootstrap` is a shorthand for `registryBuilder.addRegistry(REGISTRY_KEY, DYNAMIC_REGISTRANT::bootstrap);`
+
+## Documentation
+Registrar provides some javadocs, but if you don't want to download the source jar to avoid my multiversioned comments, read this.
+
+<details>
+  <summary>Game Rules</summary>
+
+</details>
