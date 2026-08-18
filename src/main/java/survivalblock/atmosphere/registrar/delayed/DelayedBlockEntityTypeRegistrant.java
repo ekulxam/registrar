@@ -23,10 +23,14 @@
  */
 package survivalblock.atmosphere.registrar.delayed;
 
+//? if <=1.21.1
+//import com.mojang.datafixers.types.Type;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
@@ -59,4 +63,41 @@ public class DelayedBlockEntityTypeRegistrant extends DelayedRegistrant<BlockEnt
     public <T extends BlockEntity> BlockEntityType<T> register(ResourceKey<BlockEntityType<?>> key, BlockEntityType<T> blockEntityType) {
         return super.register(key, blockEntityType);
     }
+
+    //? if <=1.21.1 {
+    /*public <T extends BlockEntity> BlockEntityType<T> register(String name, BlockEntityType.Builder<T> builder) {
+        return this.register(this.createKey(name), builder.build(null));
+    }
+
+    public <T extends BlockEntity> BlockEntityType<T> register(ResourceKey<BlockEntityType<?>> key, BlockEntityType.Builder<T> builder) {
+        return this.register(key, builder.build(null));
+    }
+
+    public <T extends BlockEntity> BlockEntityType<T> register(String name, BlockEntityType.Builder<T> builder, Type<?> type) {
+        return this.register(this.createKey(name), builder.build(type));
+    }
+
+    public <T extends BlockEntity> BlockEntityType<T> register(ResourceKey<BlockEntityType<?>> key, BlockEntityType.Builder<T> builder, Type<?> type) {
+        return this.register(key, builder.build(type));
+    }
+    *///?}
+
+    //? if <=1.21.1
+    //@SuppressWarnings("deprecation")
+    public <T extends BlockEntity> BlockEntityType<T> register(ResourceKey<BlockEntityType<?>> key, FabricBlockEntityTypeBuilder<T> builder) {
+        return this.register(key, builder.build());
+    }
+
+    //~ if >1.21.1 'BlockEntityType.BlockEntitySupplier' -> 'FabricBlockEntityTypeBuilder.Factory' {
+    //? if >=26.2
+    @Deprecated(since = "Minecraft 26.2")
+    public <T extends BlockEntity> BlockEntityType<T> register(String name, FabricBlockEntityTypeBuilder.Factory<? extends T> blockEntitySupplier, Block... blocks) {
+        return this.register(this.createKey(name), blockEntitySupplier, blocks);
+    }
+
+    public <T extends BlockEntity> BlockEntityType<T> register(ResourceKey<BlockEntityType<?>> key, FabricBlockEntityTypeBuilder.Factory<? extends T> blockEntitySupplier, Block... blocks) {
+        //~ if >1.21.1 'BlockEntityType.Builder.of(' -> 'FabricBlockEntityTypeBuilder.create('
+        return this.register(key, FabricBlockEntityTypeBuilder.create(blockEntitySupplier, blocks));
+    }
+    //~}
 }
