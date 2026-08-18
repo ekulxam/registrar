@@ -26,10 +26,14 @@ package survivalblock.atmosphere.registrar;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.function.Function;
 
 public class Registrant<T> {
+    protected static final Logger LOGGER = LoggerFactory.getLogger("Registrar");
+
     protected final Function<String, Identifier> idFunction;
     protected final Registry<T> registry;
 

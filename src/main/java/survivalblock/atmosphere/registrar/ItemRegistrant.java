@@ -23,7 +23,6 @@
  */
 package survivalblock.atmosphere.registrar;
 
-//? if >=26.2
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -34,14 +33,11 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-//? if >=26.2
 import survivalblock.atmosphere.registrar.annotation.ConstructItem;
 
-//? if >=26.2 {
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.Map;
-//?}
 import java.util.function.Function;
 
 @SuppressWarnings("unused")
@@ -117,11 +113,10 @@ public class ItemRegistrant extends Registrant<Item> {
     }
     //?}
 
-    //? if >=26.2 {
     /**
-     * Uses reflection to add {@link Item}s from {@link BlockItemId}s.
+     * Uses reflection to add {@link Item}s from {@linkplain Block}s (<26.2) or {@linkplain BlockItemId}s (>=26.2).
      * Note that this method requires the Blocks to all be registered.
-     * @param clazz the class containing the {@link BlockItemId}s
+     * @param clazz the class containing the {@linkplain Block}s (<26.2) or {@linkplain BlockItemId}s (>=26.2)
      * @param tryAllByDefault true to attempt registration, even if no annotation is present
      * @return all successfully registered items
      */
@@ -131,6 +126,8 @@ public class ItemRegistrant extends Registrant<Item> {
             try {
                 Class<? extends Item> blockItemClass;
                 boolean useBlockTranslation;
+                //? if >=26.2
+                boolean suppressIdWarnings;
                 if (field.isAnnotationPresent(ConstructItem.class)) {
                     ConstructItem construct = field.getAnnotation(ConstructItem.class);
                     if (construct.exclude()) {
@@ -138,23 +135,43 @@ public class ItemRegistrant extends Registrant<Item> {
                     }
                     blockItemClass = construct.constructor();
                     useBlockTranslation = construct.useBlockTranslation();
+                    //? if >=26.2
+                    suppressIdWarnings = construct.suppressIdWarnings();
                 } else if (tryAllByDefault) {
                     blockItemClass = BlockItem.class;
                     useBlockTranslation = true;
+                    //? if >=26.2
+                    suppressIdWarnings = false;
                 } else {
                     continue;
                 }
 
                 Object obj = field.get(null);
-                if (!(obj instanceof BlockItemId id)) {
+                Block block;
+                //? if >=26.2 {
+                BlockItemId id;
+                if (obj instanceof BlockItemId) {
+                    id = (BlockItemId) obj;
+                    block = BuiltInRegistries.BLOCK.getValue(id.block());
+
+                    if (block == null) {
+                        continue;
+                    }
+                } else if (obj instanceof Block) {
+                    id = null;
+                    block = (Block) obj;
+                    if (!suppressIdWarnings) {
+                        LOGGER.warn("Item {} from block {} in class {} is being registered reflectively without a BlockItemId! This is a deprecated action and will likely not be possible in future versions of Minecraft.", blockItemClass.getName(), block, clazz.getName());
+                    }
+                } else {
                     continue;
                 }
-
-                Block block = BuiltInRegistries.BLOCK.getValue(id.block());
-
-                if (block == null) {
+                //?} else {
+                /*if (!(obj instanceof Block)) {
                     continue;
                 }
+                block = (Block) obj;
+                *///?}
 
                 Item.Properties settings = new Item.Properties();
                 if (useBlockTranslation) {
@@ -163,13 +180,24 @@ public class ItemRegistrant extends Registrant<Item> {
 
                 Constructor<? extends Item> constructor = blockItemClass.getConstructor(Block.class, Item.Properties.class);
 
-                Item item = this.register(id, block, properties -> {
+                Function<Item.Properties, Item> creator = properties -> {
                     try {
                         return constructor.newInstance(block, properties);
                     } catch (ReflectiveOperationException e) {
                         throw new RuntimeException(e);
                     }
-                }, settings);
+                };
+
+                //? if >=26.2 {
+                Item item;
+                if (id == null) {
+                    item = this.register(block, creator, settings);
+                } else {
+                    item = this.register(id, block, creator, settings);
+                }
+                //?} else {
+                /*item = this.register(block, creator, settings);
+                *///?}
 
                 builder.put(block, item);
             } catch (ReflectiveOperationException ignored) {
@@ -177,5 +205,4 @@ public class ItemRegistrant extends Registrant<Item> {
         }
         return builder.build();
     }
-    //?}
 }

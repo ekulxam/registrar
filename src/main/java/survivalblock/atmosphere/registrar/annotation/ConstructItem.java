@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-//? if >=26.2 {
 package survivalblock.atmosphere.registrar.annotation;
 
 import net.minecraft.world.item.BlockItem;
@@ -33,6 +32,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Annotated on {@link net.minecraft.world.level.block.Block}s (<26.2) and
+ * {@link net.minecraft.references.BlockItemId}s (>=26.2) for registration via reflection.
  * @see survivalblock.atmosphere.registrar.ItemRegistrant#registerFromAnnotations(Class, boolean)
  * @see survivalblock.atmosphere.registrar.delayed.DelayedItemRegistrant#registerFromAnnotations(Class, boolean)
  */
@@ -54,5 +55,9 @@ public @interface ConstructItem {
      * @return whether this block should be excluded from item registration
      */
     boolean exclude() default false;
+
+    //? if >=26.2 {
+    @Deprecated
+    boolean suppressIdWarnings() default false;
+    //?}
 }
-//?}
