@@ -35,8 +35,16 @@ import org.jspecify.annotations.Nullable;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
+/**
+ * Special registrant for {@link AttachmentType}s. These were marked as non-experimental in <a href="https://github.com/FabricMC/fabric-api/pull/5222">FabricMC/fabric-api#5222</a>.
+ */
+//? if <26 {
+/*@SuppressWarnings({"unused", "UnstableApiUsage"})
+*///?} else {
 @SuppressWarnings("unused")
+//?}
 public class AttachmentTypeRegistrant extends SpecialRegistrant {
     public AttachmentTypeRegistrant(String modId) {
         super(modId);
@@ -55,71 +63,82 @@ public class AttachmentTypeRegistrant extends SpecialRegistrant {
     }
 
     // defaulted
-    public <A> AttachmentType<A> register(String name, A defaultValue) {
-        return this.register(name, defaultValue, null);
+    public <A> AttachmentType<A> register(String name, Supplier<A> initializer) {
+        return this.register(name, initializer, null);
     }
 
-    public <A> AttachmentType<A> register(String name, A defaultValue, boolean copyOnDeath) {
-        return this.register(name, defaultValue, null, copyOnDeath);
+    public <A> AttachmentType<A> register(String name, Supplier<A> initializer, boolean copyOnDeath) {
+        return this.register(name, initializer, null, copyOnDeath);
     }
 
     // defaulted with codec only
-    public <A> AttachmentType<A> register(String name, A defaultValue, @Nullable Codec<A> codec) {
-        return this.register(name, defaultValue, codec, false);
+    public <A> AttachmentType<A> register(String name, Supplier<A> initializer, @Nullable Codec<A> codec) {
+        return this.register(name, initializer, codec, false);
     }
 
     // defaulted with codec and death persistence
-    public <A> AttachmentType<A> register(String name, A defaultValue, @Nullable Codec<A> codec, boolean copyOnDeath) {
-        return this.register(name, defaultValue, codec, null, null, copyOnDeath);
+    public <A> AttachmentType<A> register(String name, Supplier<A> initializer, @Nullable Codec<A> codec, boolean copyOnDeath) {
+        return this.register(name, initializer, codec, null, null, copyOnDeath);
     }
 
     // defaulted with packet codec only
-    public <A> AttachmentType<A> register(String name, A defaultValue, @Nullable StreamCodec<? super RegistryFriendlyByteBuf, A> packetCodec, @Nullable AttachmentSyncPredicate syncPredicate) {
-        return this.register(name, defaultValue, null, packetCodec, syncPredicate, null, false);
+    public <A> AttachmentType<A> register(String name, Supplier<A> initializer, @Nullable StreamCodec<? super RegistryFriendlyByteBuf, A> packetCodec, @Nullable AttachmentSyncPredicate syncPredicate) {
+        return this.register(name, initializer, null, packetCodec, syncPredicate, false);
     }
 
+    //? if >=26 {
     // defaulted with packet codec and max sync size
-    public <A> AttachmentType<A> register(String name, A defaultValue, @Nullable StreamCodec<? super RegistryFriendlyByteBuf, A> packetCodec, @Nullable AttachmentSyncPredicate syncPredicate, @Nullable Integer maxSyncSize) {
-        return this.register(name, defaultValue, null, packetCodec, syncPredicate, maxSyncSize, false);
+    public <A> AttachmentType<A> register(String name, Supplier<A> initializer, @Nullable StreamCodec<? super RegistryFriendlyByteBuf, A> packetCodec, @Nullable AttachmentSyncPredicate syncPredicate, @Nullable Integer maxSyncSize) {
+        return this.register(name, initializer, null, packetCodec, syncPredicate, maxSyncSize, false);
     }
+    //?}
 
     // defaulted with packet codec and death persistence
-    public <A> AttachmentType<A> register(String name, A defaultValue, @Nullable StreamCodec<? super RegistryFriendlyByteBuf, A> packetCodec, @Nullable AttachmentSyncPredicate syncPredicate, boolean copyOnDeath) {
-        return this.register(name, defaultValue, null, packetCodec, syncPredicate, null, copyOnDeath);
+    public <A> AttachmentType<A> register(String name, Supplier<A> initializer, @Nullable StreamCodec<? super RegistryFriendlyByteBuf, A> packetCodec, @Nullable AttachmentSyncPredicate syncPredicate, boolean copyOnDeath) {
+        return this.register(name, initializer, null, packetCodec, syncPredicate, /*? >=26 {*/null,/*?}*/ copyOnDeath);
     }
 
+    //? if >=26 {
     // defaulted with packet codec, max sync size, and death persistence
-    public <A> AttachmentType<A> register(String name, A defaultValue, @Nullable StreamCodec<? super RegistryFriendlyByteBuf, A> packetCodec, @Nullable AttachmentSyncPredicate syncPredicate, @Nullable Integer maxSyncSize, boolean copyOnDeath) {
-        return this.register(name, defaultValue, null, packetCodec, syncPredicate, null, copyOnDeath);
+    public <A> AttachmentType<A> register(String name, Supplier<A> initializer, @Nullable StreamCodec<? super RegistryFriendlyByteBuf, A> packetCodec, @Nullable AttachmentSyncPredicate syncPredicate, @Nullable Integer maxSyncSize, boolean copyOnDeath) {
+        return this.register(name, initializer, null, packetCodec, syncPredicate, null, copyOnDeath);
     }
+    //?}
 
     // defaulted with codec and packet codec
-    public <A> AttachmentType<A> register(String name, A defaultValue, @Nullable Codec<A> codec, @Nullable StreamCodec<? super RegistryFriendlyByteBuf, A> packetCodec, @Nullable AttachmentSyncPredicate syncPredicate) {
-        return this.register(name, defaultValue, codec, packetCodec, syncPredicate, null, false);
+    public <A> AttachmentType<A> register(String name, Supplier<A> initializer, @Nullable Codec<A> codec, @Nullable StreamCodec<? super RegistryFriendlyByteBuf, A> packetCodec, @Nullable AttachmentSyncPredicate syncPredicate) {
+        return this.register(name, initializer, codec, packetCodec, syncPredicate, /*? >=26 {*/null,/*?}*/ false);
     }
 
+    //? if >=26 {
     // defaulted with codec, packet codec, and max sync size
-    public <A> AttachmentType<A> register(String name, A defaultValue, @Nullable Codec<A> codec, @Nullable StreamCodec<? super RegistryFriendlyByteBuf, A> packetCodec, @Nullable AttachmentSyncPredicate syncPredicate, @Nullable Integer maxSyncSize) {
-        return this.register(name, defaultValue, codec, packetCodec, syncPredicate, maxSyncSize, false);
+    public <A> AttachmentType<A> register(String name, Supplier<A> initializer, @Nullable Codec<A> codec, @Nullable StreamCodec<? super RegistryFriendlyByteBuf, A> packetCodec, @Nullable AttachmentSyncPredicate syncPredicate, @Nullable Integer maxSyncSize) {
+        return this.register(name, initializer, codec, packetCodec, syncPredicate, maxSyncSize, false);
     }
+    //?}
 
+    //? if >=26 {
     // defaulted with codec, packet codec, and death persistence
-    public <A> AttachmentType<A> register(String name, A defaultValue, @Nullable Codec<A> codec, @Nullable StreamCodec<? super RegistryFriendlyByteBuf, A> packetCodec, @Nullable AttachmentSyncPredicate syncPredicate, boolean copyOnDeath) {
-        return this.register(name, defaultValue, codec, packetCodec, syncPredicate, null, copyOnDeath);
+    public <A> AttachmentType<A> register(String name, Supplier<A> initializer, @Nullable Codec<A> codec, @Nullable StreamCodec<? super RegistryFriendlyByteBuf, A> packetCodec, @Nullable AttachmentSyncPredicate syncPredicate, boolean copyOnDeath) {
+        return this.register(name, initializer, codec, packetCodec, syncPredicate, null, copyOnDeath);
     }
+    //?}
 
-    // all
-    public <A> AttachmentType<A> register(String name, A defaultValue, @Nullable Codec<A> codec, @Nullable StreamCodec<? super RegistryFriendlyByteBuf, A> packetCodec, @Nullable AttachmentSyncPredicate syncPredicate, @Nullable Integer maxSyncSize, boolean copyOnDeath) {
+    // all (maxSyncSize added in 5143)
+    public <A> AttachmentType<A> register(String name, Supplier<A> initializer, @Nullable Codec<A> codec, @Nullable StreamCodec<? super RegistryFriendlyByteBuf, A> packetCodec, @Nullable AttachmentSyncPredicate syncPredicate,/*? >=26 {*/@Nullable Integer maxSyncSize,/*?}*/boolean copyOnDeath) {
         return this.register(name, builder -> {
-            builder.initializer(() -> defaultValue);
+            builder.initializer(initializer);
             if (codec != null) {
                 builder.persistent(codec);
             }
-            if (packetCodec != null) {
+            if (packetCodec != null || syncPredicate != null /*? >=26 {*/|| maxSyncSize != null/*?}*/) {
+                //? if >=26 {
                 if (maxSyncSize != null) {
-                    builder.syncWith(packetCodec, Objects.requireNonNull(syncPredicate), maxSyncSize);
+                    builder.syncWith(Objects.requireNonNull(packetCodec), Objects.requireNonNull(syncPredicate), maxSyncSize);
                 } else {
-                    builder.syncWith(packetCodec, Objects.requireNonNull(syncPredicate));
+                //?}
+                    builder.syncWith(Objects.requireNonNull(packetCodec), Objects.requireNonNull(syncPredicate));
+                //? if >=26
                 }
             }
             if (copyOnDeath) {

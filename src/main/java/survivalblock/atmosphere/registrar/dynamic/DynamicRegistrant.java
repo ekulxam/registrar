@@ -63,6 +63,7 @@ public class DynamicRegistrant<T> extends SpecialRegistrant {
     }
 
     public ResourceKey<T> register(String path, T obj) {
+        //noinspection unused
         return this.register(path, registerable -> obj);
     }
 
