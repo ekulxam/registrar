@@ -29,11 +29,12 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import survivalblock.atmosphere.registrar.shared.IEntityTypeRegistrant;
 
 import java.util.function.Function;
 
 @SuppressWarnings("unused")
-public class DelayedEntityTypeRegistrant extends DelayedRegistrant<EntityType<?>> {
+public class DelayedEntityTypeRegistrant extends DelayedRegistrant<EntityType<?>> implements IEntityTypeRegistrant {
     protected DelayedEntityTypeRegistrant(String modId, Registry<EntityType<?>> registry) {
         super(modId, registry);
     }
@@ -48,25 +49,5 @@ public class DelayedEntityTypeRegistrant extends DelayedRegistrant<EntityType<?>
 
     public DelayedEntityTypeRegistrant(Function<String, Identifier> idFunction) {
         this(idFunction, BuiltInRegistries.ENTITY_TYPE);
-    }
-
-    //? if >=26.2
-    @Deprecated(since = "Minecraft 26.2")
-    public <T extends Entity> EntityType<T> register(String name, EntityType.Builder<T> builder) {
-        return this.register(this.createKey(name), builder);
-    }
-
-    public <T extends Entity> EntityType<T> register(ResourceKey<EntityType<?>> key, EntityType.Builder<T> builder) {
-        return super.register(key, builder.build(/*? >=1.21.2 {*/key/*?}*/));
-    }
-
-    //? if >=26.2
-    @Deprecated(since = "Minecraft 26.2")
-    public <T extends Entity> EntityType<T> register(String name, EntityType<T> entityType) {
-        return super.register(name, entityType);
-    }
-
-    public <T extends Entity> EntityType<T> register(ResourceKey<EntityType<?>> key, EntityType<T> entityType) {
-        return super.register(key, entityType);
     }
 }

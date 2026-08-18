@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 //? if >=26.2
 import net.minecraft.references.BlockItemId;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -15,13 +16,71 @@ import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.function.Function;
 
-public interface IBlockItemRegistrant {
-    //? if >=26.2
-    @Deprecated(since = "Minecraft 26.2")
-    <T extends Item, S extends Item.Properties> T register(Block block, Function<S, T> itemFunction, S settings);
+public interface IItemRegistrant extends IRegistrant<Item> {
+    @Override
+    default <U extends Item> U register(String name, U obj) {
+        return IRegistrant.super.register(name, obj);
+    }
+
+    @Override
+    default <U extends Item> U register(ResourceKey<Item> key, U obj) {
+        return IRegistrant.super.register(key, obj);
+    }
 
     //? if >=26.2
-    <T extends Item, S extends Item.Properties> T register(BlockItemId id, Block block, Function<S, T> itemFunction, S settings);
+    @Deprecated(since = "Minecraft 26.2")
+    default <T extends Item, S extends Item.Properties> T register(String name, Function<S, T> itemFunction, S settings) {
+        return this.register(this.createKey(name), itemFunction, settings);
+    }
+
+    default <T extends Item, S extends Item.Properties> T register(ResourceKey<Item> key, Function<S, T> itemFunction, S settings) {
+        T item = itemFunction.apply(/*? >=1.21.2 {*/(S)/*?}*/ settings /*? >=1.21.2 {*/.setId(key) /*?}*/);
+        return this.register(key, item);
+    }
+
+    //? if >=26.2
+    @Deprecated(since = "Minecraft 26.2")
+    default BlockItem register(Block block) {
+        return this.register(block, new Item.Properties());
+    }
+
+    //? if >=26.2 {
+    default BlockItem register(BlockItemId id, Block block) {
+        return this.register(id, block, new Item.Properties());
+    }
+    //?}
+
+    //? if >=26.2
+    @Deprecated(since = "Minecraft 26.2")
+    default <S extends Item.Properties> BlockItem register(Block block, S settings) {
+        return register(block, settings1 -> new BlockItem(block, settings1), settings);
+    }
+
+    //? if >=26.2 {
+    default <S extends Item.Properties> BlockItem register(BlockItemId id, Block block, S settings) {
+        return this.register(id, block, settings1 -> new BlockItem(block, settings1), settings);
+    }
+    //?}
+
+    //? if >=26.2
+    @Deprecated(since = "Minecraft 26.2")
+    default <T extends Item, S extends Item.Properties> T register(Block block, Function<S, T> itemFunction, S settings) {
+        T item = this.register(block.builtInRegistryHolder().key()./*? <1.21.11 {*/ /*location() *//*?} else {*/ identifier() /*?}*/.getPath(), itemFunction, settings);
+        if (item instanceof BlockItem blockItem) {
+            blockItem.registerBlocks(Item.BY_BLOCK, blockItem);
+        }
+        return item;
+    }
+
+    //? if >=26.2 {
+    default <T extends Item, S extends Item.Properties> T register(BlockItemId id, Block block, Function<S, T> itemFunction, S settings) {
+        T item = this.register(id.item(), itemFunction, settings);
+        if (item instanceof BlockItem blockItem) {
+            blockItem.registerBlocks(Item.BY_BLOCK, blockItem);
+        }
+        return item;
+    }
+    //?}
 
     /**
      * Uses reflection to add {@link Item}s from {@linkplain Block}s (<26.2) or {@linkplain BlockItemId}s (>=26.2).

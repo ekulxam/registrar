@@ -28,11 +28,12 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ai.attributes.Attribute;
+import survivalblock.atmosphere.registrar.shared.IReferenceRegistrant;
 
 import java.util.function.Function;
 
 @SuppressWarnings("unused")
-public class AttributeRegistrant extends Registrant<Attribute> {
+public class AttributeRegistrant extends Registrant<Attribute> implements IReferenceRegistrant<Attribute> {
     protected AttributeRegistrant(String modId, Registry<Attribute> registry) {
         super(modId, registry);
     }
@@ -47,9 +48,5 @@ public class AttributeRegistrant extends Registrant<Attribute> {
 
     public AttributeRegistrant(Function<String, Identifier> idFunction) {
         this(idFunction, BuiltInRegistries.ATTRIBUTE);
-    }
-
-    public Holder.Reference<Attribute> registerReference(String name, Attribute attribute) {
-        return Registry.registerForHolder(this.registry, this.idFunction.apply(name), attribute);
     }
 }

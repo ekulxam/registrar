@@ -23,15 +23,17 @@
  */
 package survivalblock.atmosphere.registrar;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import survivalblock.atmosphere.registrar.shared.IRegistrant;
 
 import java.util.function.Function;
 
-public class Registrant<T> {
+public class Registrant<T> implements IRegistrant<T> {
     public static final Logger LOGGER = LoggerFactory.getLogger("Registrar");
 
     protected final Function<String, Identifier> idFunction;
@@ -46,15 +48,13 @@ public class Registrant<T> {
         this.registry = registry;
     }
 
-    public <U extends T> U register(String name, U obj) {
-        return this.register(this.createKey(name), obj);
+    @Override
+    public Registry<T> getRegistry() {
+        return this.registry;
     }
 
-    public <U extends T> U register(ResourceKey<T> key, U obj) {
-        return Registry.register(this.registry, key, obj);
-    }
-
-    public ResourceKey<T> createKey(String name) {
-        return ResourceKey.create(this.registry.key(), this.idFunction.apply(name));
+    @Override
+    public Identifier id(String name) {
+        return this.idFunction.apply(name);
     }
 }

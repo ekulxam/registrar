@@ -27,11 +27,12 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
+import survivalblock.atmosphere.registrar.shared.IDataComponentTypeRegistrant;
 
 import java.util.function.Function;
 
 @SuppressWarnings("unused")
-public class DataComponentTypeRegistrant extends Registrant<DataComponentType<?>> {
+public class DataComponentTypeRegistrant extends Registrant<DataComponentType<?>> implements IDataComponentTypeRegistrant {
     protected DataComponentTypeRegistrant(String modId, Registry<DataComponentType<?>> registry) {
         super(modId, registry);
     }

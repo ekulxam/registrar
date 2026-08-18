@@ -8,14 +8,16 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
-public interface IBlockEntityBuilderRegistrant {
-    ResourceKey<BlockEntityType<?>> createKey(String name);
-
+public interface IBlockEntityRegistrant extends IRegistrant<BlockEntityType<?>> {
     //? if >=26.2
     @Deprecated(since = "Minecraft 26.2")
-    <T extends BlockEntity> BlockEntityType<T> register(String name, BlockEntityType<T> blockEntityType);
+    default <T extends BlockEntity> BlockEntityType<T> register(String name, BlockEntityType<T> blockEntityType) {
+        return IRegistrant.super.register(name, blockEntityType);
+    }
 
-    <T extends BlockEntity> BlockEntityType<T> register(ResourceKey<BlockEntityType<?>> key, BlockEntityType<T> blockEntityType);
+    default <T extends BlockEntity> BlockEntityType<T> register(ResourceKey<BlockEntityType<?>> key, BlockEntityType<T> blockEntityType) {
+        return IRegistrant.super.register(key, blockEntityType);
+    }
 
     //? if <=1.21.1 {
     /*default <T extends BlockEntity> BlockEntityType<T> register(String name, BlockEntityType.Builder<T> builder) {

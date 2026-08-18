@@ -23,16 +23,16 @@
  */
 package survivalblock.atmosphere.registrar;
 
-import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffect;
+import survivalblock.atmosphere.registrar.shared.IReferenceRegistrant;
 
 import java.util.function.Function;
 
 @SuppressWarnings("unused")
-public class StatusEffectRegistrant extends Registrant<MobEffect> {
+public class StatusEffectRegistrant extends Registrant<MobEffect> implements IReferenceRegistrant<MobEffect> {
     protected StatusEffectRegistrant(String modId, Registry<MobEffect> registry) {
         super(modId, registry);
     }
@@ -47,9 +47,5 @@ public class StatusEffectRegistrant extends Registrant<MobEffect> {
 
     public StatusEffectRegistrant(Function<String, Identifier> idFunction) {
         this(idFunction, BuiltInRegistries.MOB_EFFECT);
-    }
-
-    public Holder.Reference<MobEffect> registerReference(String name, MobEffect effect) {
-        return Registry.registerForHolder(this.registry, this.idFunction.apply(name), effect);
     }
 }

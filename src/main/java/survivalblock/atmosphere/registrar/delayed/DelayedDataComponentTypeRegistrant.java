@@ -27,11 +27,12 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
+import survivalblock.atmosphere.registrar.shared.IDataComponentTypeRegistrant;
 
 import java.util.function.Function;
 
 @SuppressWarnings("unused")
-public class DelayedDataComponentTypeRegistrant extends DelayedRegistrant<DataComponentType<?>> {
+public class DelayedDataComponentTypeRegistrant extends DelayedRegistrant<DataComponentType<?>> implements IDataComponentTypeRegistrant {
     protected DelayedDataComponentTypeRegistrant(String modId, Registry<DataComponentType<?>> registry) {
         super(modId, registry);
     }
@@ -46,13 +47,5 @@ public class DelayedDataComponentTypeRegistrant extends DelayedRegistrant<DataCo
 
     public DelayedDataComponentTypeRegistrant(Function<String, Identifier> idFunction) {
         this(idFunction, BuiltInRegistries.DATA_COMPONENT_TYPE);
-    }
-
-    public <T> DataComponentType<T> register(String name, DataComponentType.Builder<T> builder) {
-        return this.register(name, builder.build());
-    }
-
-    public <T> DataComponentType<T> register(String name, DataComponentType<T> componentType) {
-        return super.register(name, componentType);
     }
 }

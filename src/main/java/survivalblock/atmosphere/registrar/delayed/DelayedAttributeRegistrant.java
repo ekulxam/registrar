@@ -23,16 +23,16 @@
  */
 package survivalblock.atmosphere.registrar.delayed;
 
-import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ai.attributes.Attribute;
+import survivalblock.atmosphere.registrar.shared.IReferenceRegistrant;
 
 import java.util.function.Function;
 
 @SuppressWarnings("unused")
-public class DelayedAttributeRegistrant extends DelayedRegistrant<Attribute> {
+public class DelayedAttributeRegistrant extends DelayedRegistrant<Attribute> implements IReferenceRegistrant<Attribute> {
     protected DelayedAttributeRegistrant(String modId, Registry<Attribute> registry) {
         super(modId, registry);
     }
@@ -47,9 +47,5 @@ public class DelayedAttributeRegistrant extends DelayedRegistrant<Attribute> {
 
     public DelayedAttributeRegistrant(Function<String, Identifier> idFunction) {
         this(idFunction, BuiltInRegistries.ATTRIBUTE);
-    }
-
-    public Holder.Reference<Attribute> registerReference(String name, Attribute attribute) {
-        return Registry.registerForHolder(this.registry, this.idFunction.apply(name), attribute);
     }
 }

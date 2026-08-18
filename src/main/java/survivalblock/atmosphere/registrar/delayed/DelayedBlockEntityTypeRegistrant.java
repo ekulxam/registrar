@@ -29,12 +29,12 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import survivalblock.atmosphere.registrar.shared.IBlockEntityBuilderRegistrant;
+import survivalblock.atmosphere.registrar.shared.IBlockEntityRegistrant;
 
 import java.util.function.Function;
 
 @SuppressWarnings("unused")
-public class DelayedBlockEntityTypeRegistrant extends DelayedRegistrant<BlockEntityType<?>> implements IBlockEntityBuilderRegistrant {
+public class DelayedBlockEntityTypeRegistrant extends DelayedRegistrant<BlockEntityType<?>> implements IBlockEntityRegistrant {
     protected DelayedBlockEntityTypeRegistrant(String modId, Registry<BlockEntityType<?>> registry) {
         super(modId, registry);
     }
@@ -49,17 +49,5 @@ public class DelayedBlockEntityTypeRegistrant extends DelayedRegistrant<BlockEnt
 
     public DelayedBlockEntityTypeRegistrant(Function<String, Identifier> idFunction) {
         this(idFunction, BuiltInRegistries.BLOCK_ENTITY_TYPE);
-    }
-
-    //? if >=26.2
-    @Deprecated(since = "Minecraft 26.2")
-    @Override
-    public <T extends BlockEntity> BlockEntityType<T> register(String name, BlockEntityType<T> blockEntityType) {
-        return super.register(name, blockEntityType);
-    }
-
-    @Override
-    public <T extends BlockEntity> BlockEntityType<T> register(ResourceKey<BlockEntityType<?>> key, BlockEntityType<T> blockEntityType) {
-        return super.register(key, blockEntityType);
     }
 }

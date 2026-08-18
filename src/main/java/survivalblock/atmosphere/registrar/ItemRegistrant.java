@@ -23,22 +23,16 @@
  */
 package survivalblock.atmosphere.registrar;
 
-//? if >=26.2
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-//? if >=26.2
-import net.minecraft.references.BlockItemId;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
-import survivalblock.atmosphere.registrar.shared.IBlockItemRegistrant;
+import survivalblock.atmosphere.registrar.shared.IItemRegistrant;
 
 import java.util.function.Function;
 
 @SuppressWarnings("unused")
-public class ItemRegistrant extends Registrant<Item> implements IBlockItemRegistrant {
+public class ItemRegistrant extends Registrant<Item> implements IItemRegistrant {
     protected ItemRegistrant(String modId, Registry<Item> registry) {
         super(modId, registry);
     }
@@ -54,61 +48,4 @@ public class ItemRegistrant extends Registrant<Item> implements IBlockItemRegist
     public ItemRegistrant(Function<String, Identifier> idFunction) {
         this(idFunction, BuiltInRegistries.ITEM);
     }
-
-    //? if >=26.2
-    @Deprecated(since = "Minecraft 26.2")
-    public <T extends Item, S extends Item.Properties> T register(String name, Function<S, T> itemFunction, S settings) {
-        return this.register(this.createKey(name), itemFunction, settings);
-    }
-
-    public <T extends Item, S extends Item.Properties> T register(ResourceKey<Item> key, Function<S, T> itemFunction, S settings) {
-        T item = itemFunction.apply(/*? >=1.21.2 {*/(S)/*?}*/ settings /*? >=1.21.2 {*/.setId(key) /*?}*/);
-        return this.register(key, item);
-    }
-
-    //? if >=26.2
-    @Deprecated(since = "Minecraft 26.2")
-    public BlockItem register(Block block) {
-        return register(block, new Item.Properties());
-    }
-
-    //? if >=26.2 {
-    public BlockItem register(BlockItemId id, Block block) {
-        return register(id, block, new Item.Properties());
-    }
-    //?}
-
-    //? if >=26.2
-    @Deprecated(since = "Minecraft 26.2")
-    public <S extends Item.Properties> BlockItem register(Block block, S settings) {
-        return register(block, settings1 -> new BlockItem(block, settings1), settings);
-    }
-
-    //? if >=26.2 {
-    public <S extends Item.Properties> BlockItem register(BlockItemId id, Block block, S settings) {
-        return register(id, block, settings1 -> new BlockItem(block, settings1), settings);
-    }
-    //?}
-
-    //? if >=26.2
-    @Deprecated(since = "Minecraft 26.2")
-    @Override
-    public <T extends Item, S extends Item.Properties> T register(Block block, Function<S, T> itemFunction, S settings) {
-        T item = this.register(block.builtInRegistryHolder().key()./*? <1.21.11 {*/ /*location() *//*?} else {*/ identifier() /*?}*/.getPath(), itemFunction, settings);
-        if (item instanceof BlockItem blockItem) {
-            blockItem.registerBlocks(Item.BY_BLOCK, blockItem);
-        }
-        return item;
-    }
-
-    //? if >=26.2 {
-    @Override
-    public <T extends Item, S extends Item.Properties> T register(BlockItemId id, Block block, Function<S, T> itemFunction, S settings) {
-        T item = this.register(id.item(), itemFunction, settings);
-        if (item instanceof BlockItem blockItem) {
-            blockItem.registerBlocks(Item.BY_BLOCK, blockItem);
-        }
-        return item;
-    }
-    //?}
 }
