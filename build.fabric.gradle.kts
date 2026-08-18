@@ -3,7 +3,7 @@ import java.io.FileReader
 import org.gradle.jvm.tasks.Jar
 
 plugins {
-    id("net.fabricmc.fabric-loom-remap")
+    id("dev.kikugie.loom-back-compat")
     id("maven-publish")
     id("com.modrinth.minotaur")
     kotlin("jvm")
@@ -28,18 +28,22 @@ fabricApi {
     }
 }
 
+val deobf = loomx.isUnobfuscated
+
 dependencies {
     // To change the versions see the gradle.properties file
     minecraft("com.mojang:minecraft:${minecraft}")
 
     // apply mappings if obfuscated
-    @Suppress("UnstableApiUsage")
-    mappings (loom.layered {
-        officialMojangMappings()
-        if (hasProperty("deps.parchment")) {
-            parchment("org.parchmentmc.data:parchment-${minecraft}:${property("deps.parchment")}@zip")
-        }
-    })
+    if (!deobf) {
+        @Suppress("UnstableApiUsage")
+        mappings (loom.layered {
+            officialMojangMappings()
+            if (hasProperty("deps.parchment")) {
+                parchment("org.parchmentmc.data:parchment-${minecraft}:${property("deps.parchment")}@zip")
+            }
+        })
+    }
 
     modImplementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")
 
@@ -171,8 +175,8 @@ modrinth {
     token = providers.environmentVariable("MODRINTH_TOKEN")
     projectId = project.base.archivesName
     version = project.version
-    uploadFile.set(tasks.named<Jar>("jar").get().archiveFile)
-    additionalFiles.add(tasks.named<Jar>("sourcesJar").get().archiveFile)
+    uploadFile.set(loomx.modJar.flatMap { it.archiveFile })
+    additionalFiles.add(loomx.modSourcesJar.flatMap { it.archiveFile })
     gameVersions.addAll("${project.property("deps.compatibleVersions")}".split(", ").toList())
     loaders.addAll("${project.property("deps.compatibleLoaders")}".split(", ").toList())
     changelog = rootProject.file("changelog.md").readText()
