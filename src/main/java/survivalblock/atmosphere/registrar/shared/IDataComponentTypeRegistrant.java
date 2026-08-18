@@ -32,7 +32,8 @@ public interface IDataComponentTypeRegistrant extends IRegistrant<DataComponentT
         return this.register(name, builder.build());
     }
 
-    default <T> DataComponentType<T> register(String name, Consumer<DataComponentType.Builder<T>> consumer) {
+    @SuppressWarnings("unused")
+    default <T> DataComponentType<T> create(String name, Consumer<DataComponentType.Builder<T>> consumer) {
         DataComponentType.Builder<T> builder = DataComponentType.builder();
         consumer.accept(builder);
         return this.register(name, builder);
