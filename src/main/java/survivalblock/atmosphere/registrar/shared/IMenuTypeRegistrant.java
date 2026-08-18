@@ -32,7 +32,7 @@ import net.minecraft.world.inventory.MenuType;
 public interface IMenuTypeRegistrant extends IRegistrant<MenuType<?>> {
     @SuppressWarnings("unused")
     default <T extends AbstractContainerMenu> MenuType<T> registerSimple(String name, MenuType.MenuSupplier<T> factory) {
-        return this.register(name, new MenuType<>(factory, FeatureFlags.VANILLA_SET));
+        return this.register(name, factory, FeatureFlags.VANILLA_SET);
     }
 
     default <T extends AbstractContainerMenu> MenuType<T> register(String name, MenuType.MenuSupplier<T> factory, FeatureFlag... flags) {
