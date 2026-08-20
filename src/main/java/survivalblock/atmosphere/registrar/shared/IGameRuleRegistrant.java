@@ -23,36 +23,27 @@
  */
 package survivalblock.atmosphere.registrar.shared;
 
-//? if >=1.21.11 {
+//? if >=1.21.11
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleBuilder;
-//?} else {
-/*import net.fabricmc.fabric.api.gamerule.v1.CustomGameRuleCategory;
-import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
+//? if <26
+//import net.fabricmc.fabric.api.gamerule.v1.CustomGameRuleCategory;
+//? if <1.21.11 {
+/*import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 import net.fabricmc.fabric.api.gamerule.v1.rule.DoubleRule;
 import net.fabricmc.fabric.api.gamerule.v1.rule.EnumRule;
-*///?}
-//? if >=1.21.11 {
-import net.minecraft.core.registries.BuiltInRegistries;
-//?} else {
-/*import net.minecraft.resources.ResourceKey;
- *///?}
-//? if <1.21.11 {
-/*import net.minecraft.world.level.GameRules;
- *///?} else {
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.GameRules;
+*///?} else {
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.gamerules.GameRule;
+import net.minecraft.world.level.gamerules.GameRuleCategory;
 import net.minecraft.world.level.gamerules.GameRules;
 //?}
 
+@SuppressWarnings("unused")
 //~ if >=1.21.11 'GameRules.Key<?>' -> 'GameRule<?>'
 public interface IGameRuleRegistrant extends IRegistrant<GameRule<?>> {
-    @SuppressWarnings("unused")
-    //~ if >=1.21.11 'GameRules.Key<GameRules.BooleanValue>' -> 'GameRule<Boolean>'
-    default GameRule<Boolean> registerBoolean(String name, boolean defaultValue) {
-        //~ if >=1.21.11 'GameRuleFactory.createBooleanRule(' -> 'GameRuleBuilder.forBoolean('
-        return this.register(name, GameRuleBuilder.forBoolean(defaultValue));
-    }
-
     //~ if >=1.21.11 'GameRules.Key<T>' -> 'GameRule<T>' {
     //~ if >=1.21.11 'GameRules.Type<T> type' -> 'GameRuleBuilder<T> builder' {
     default <T /*? <1.21.11 {*/ /*extends GameRules.Value<T> *//*?}*/> GameRule<T> register(String name, GameRuleBuilder<T> builder) {
@@ -80,14 +71,67 @@ public interface IGameRuleRegistrant extends IRegistrant<GameRule<?>> {
         throw new UnsupportedOperationException("Not allowed before 1.21.11!");
     }
 
-    @SuppressWarnings("unused")
+    default GameRules.Key<GameRules.BooleanValue> registerBoolean(String name, boolean defaultValue) {
+        return this.register(name, GameRuleFactory.createBooleanRule(defaultValue));
+    }
+
     default GameRules.Key<GameRules.BooleanValue> registerBoolean(String name, GameRules.Category category, boolean defaultValue) {
         return this.register(name, category, GameRuleFactory.createBooleanRule(defaultValue));
     }
 
-    @SuppressWarnings("unused")
     default GameRules.Key<GameRules.BooleanValue> registerBoolean(String name, CustomGameRuleCategory category, boolean defaultValue) {
         return this.register(name, category, GameRuleFactory.createBooleanRule(defaultValue));
+    }
+
+    default GameRules.Key<DoubleRule> registerDouble(String name, double defaultValue) {
+        return this.register(name, GameRuleFactory.createDoubleRule(defaultValue));
+    }
+
+    default GameRules.Key<DoubleRule> registerDouble(String name, GameRules.Category category, double defaultValue) {
+        return this.register(name, category, GameRuleFactory.createDoubleRule(defaultValue));
+    }
+
+    default GameRules.Key<DoubleRule> registerDouble(String name, CustomGameRuleCategory category, double defaultValue) {
+        return this.register(name, category, GameRuleFactory.createDoubleRule(defaultValue));
+    }
+
+    default GameRules.Key<DoubleRule> registerDouble(String name, double defaultValue, double min, double max) {
+        return this.register(name, GameRuleFactory.createDoubleRule(defaultValue, min, max));
+    }
+
+    default GameRules.Key<DoubleRule> registerDouble(String name, GameRules.Category category, double defaultValue, double min, double max) {
+        return this.register(name, category, GameRuleFactory.createDoubleRule(defaultValue, min, max));
+    }
+
+    default GameRules.Key<DoubleRule> registerDouble(String name, CustomGameRuleCategory category, double defaultValue, double min, double max) {
+        return this.register(name, category, GameRuleFactory.createDoubleRule(defaultValue, min, max));
+    }
+
+    default <E extends Enum<E>> GameRules.Key<EnumRule<E>> registerEnum(String name, E defaultValue) {
+        return this.register(name, GameRuleFactory.createEnumRule(defaultValue));
+    }
+
+    default <E extends Enum<E>> GameRules.Key<EnumRule<E>> registerEnum(String name, CustomGameRuleCategory category, E defaultValue) {
+        return this.register(name, category, GameRuleFactory.createEnumRule(defaultValue));
+    }
+
+    default <E extends Enum<E>> GameRules.Key<EnumRule<E>> registerEnum(String name, GameRules.Category category, E defaultValue) {
+        return this.register(name, category, GameRuleFactory.createEnumRule(defaultValue));
+    }
+
+    @SuppressWarnings("unchecked")
+    default <E extends Enum<E>> GameRules.Key<EnumRule<E>> registerEnum(String name, E defaultValue, E... supportedValues) {
+        return this.register(name, GameRuleFactory.createEnumRule(defaultValue));
+    }
+
+    @SuppressWarnings("unchecked")
+    default <E extends Enum<E>> GameRules.Key<EnumRule<E>> registerEnum(String name, CustomGameRuleCategory category, E defaultValue, E... supportedValues) {
+        return this.register(name, category, GameRuleFactory.createEnumRule(defaultValue, supportedValues));
+    }
+
+    @SuppressWarnings("unchecked")
+    default <E extends Enum<E>> GameRules.Key<EnumRule<E>> registerEnum(String name, GameRules.Category category, E defaultValue, E... supportedValues) {
+        return this.register(name, category, GameRuleFactory.createEnumRule(defaultValue, supportedValues));
     }
 
     default <T extends GameRules.Value<T>> GameRules.Key<T> register(String name, GameRules.Category category, GameRules.Type<T> type) {
@@ -97,7 +141,72 @@ public interface IGameRuleRegistrant extends IRegistrant<GameRule<?>> {
     default <T extends GameRules.Value<T>> GameRules.Key<T> register(String name, CustomGameRuleCategory category, GameRules.Type<T> type) {
         return GameRuleRegistry.register(this.id(name).toString(), category, type);
     }
+    *///?} else {
+    default GameRule<Boolean> registerBoolean(String name, boolean defaultValue) {
+        return this.register(name, GameRuleBuilder.forBoolean(defaultValue));
+    }
+
+    default GameRule<Double> registerDouble(String name, double defaultValue) {
+        return this.register(name, GameRuleBuilder.forDouble(defaultValue));
+    }
+
+    default GameRule<Double> registerDouble(String name, double defaultValue, double min, double max) {
+        return this.register(name, GameRuleBuilder.forDouble(defaultValue).range(min, max));
+    }
+
+    default <E extends Enum<E>> GameRule<E> registerEnum(String name, E defaultValue) {
+        return this.register(name, GameRuleBuilder.forEnum(defaultValue));
+    }
+
+    @SuppressWarnings("unchecked")
+    default <E extends Enum<E>> GameRule<E> registerEnum(String name, E defaultValue, E... supportedValues) {
+        return this.register(name, GameRuleBuilder.forEnum(defaultValue).supportedValues(supportedValues));
+    }
+
+    //? if <26 {
+    /*default GameRule<Boolean> registerBoolean(String name, CustomGameRuleCategory category, boolean defaultValue) {
+        return this.register(name, GameRuleBuilder.forBoolean(defaultValue).category(category));
+    }
+
+    default GameRule<Double> registerDouble(String name, CustomGameRuleCategory category, double defaultValue) {
+        return this.register(name, GameRuleBuilder.forDouble(defaultValue).category(category));
+    }
+
+    default GameRule<Double> registerDouble(String name, CustomGameRuleCategory category, double defaultValue, double min, double max) {
+        return this.register(name, GameRuleBuilder.forDouble(defaultValue).range(min, max).category(category));
+    }
+
+    default <E extends Enum<E>> GameRule<E> registerEnum(String name, CustomGameRuleCategory category, E defaultValue) {
+        return this.register(name, GameRuleBuilder.forEnum(defaultValue).category(category));
+    }
+
+    @SuppressWarnings("unchecked")
+    default <E extends Enum<E>> GameRule<E> registerEnum(String name, CustomGameRuleCategory category, E defaultValue, E... supportedValues) {
+        return this.register(name, GameRuleBuilder.forEnum(defaultValue).supportedValues(supportedValues).category(category));
+    }
     *///?}
+
+    default GameRule<Boolean> registerBoolean(String name, GameRuleCategory category, boolean defaultValue) {
+        return this.register(name, GameRuleBuilder.forBoolean(defaultValue).category(category));
+    }
+
+    default GameRule<Double> registerDouble(String name, GameRuleCategory category, double defaultValue) {
+        return this.register(name, GameRuleBuilder.forDouble(defaultValue).category(category));
+    }
+
+    default GameRule<Double> registerDouble(String name, GameRuleCategory category, double defaultValue, double min, double max) {
+        return this.register(name, GameRuleBuilder.forDouble(defaultValue).range(min, max).category(category));
+    }
+
+    default <E extends Enum<E>> GameRule<E> registerEnum(String name, GameRuleCategory category, E defaultValue) {
+        return this.register(name, GameRuleBuilder.forEnum(defaultValue).category(category));
+    }
+
+    @SuppressWarnings("unchecked")
+    default <E extends Enum<E>> GameRule<E> registerEnum(String name, GameRuleCategory category, E defaultValue, E... supportedValues) {
+        return this.register(name, GameRuleBuilder.forEnum(defaultValue).supportedValues(supportedValues).category(category));
+    }
+    //?}
 
     //~ if >=1.21.11 'GameRules.Key<' -> 'GameRule<' {
     //~ if >=1.21.11 'GameRules.BooleanValue>' -> 'Boolean>' {
