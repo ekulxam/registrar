@@ -27,6 +27,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 
+@SuppressWarnings("unused")
 public interface IReferenceRegistrant<T> extends IRegistrant<T> {
     default <U extends T> Holder.Reference<T> registerReference(String name, U obj) {
         return Registry.registerForHolder(this.getRegistry(), this.id(name), obj);

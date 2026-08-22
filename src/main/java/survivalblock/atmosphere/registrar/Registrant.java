@@ -23,10 +23,8 @@
  */
 package survivalblock.atmosphere.registrar;
 
-import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
-import net.minecraft.resources.ResourceKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import survivalblock.atmosphere.registrar.shared.IRegistrant;
