@@ -32,7 +32,7 @@ import net.minecraft.world.damagesource.DamageType;
 import java.util.function.Function;
 
 @SuppressWarnings("unused")
-public class DamageTypeRegistrant extends DynamicRegistrant<DamageType> {
+public class DamageTypeRegistrant extends DynamicRegistrant<DamageType> implements ContextExposing<DamageType> {
     protected DamageTypeRegistrant(String modId, ResourceKey<? extends Registry<DamageType>> registry) {
         super(modId, registry);
     }
@@ -54,6 +54,6 @@ public class DamageTypeRegistrant extends DynamicRegistrant<DamageType> {
     }
 
     public ResourceKey<DamageType> register(String path, String message, float exhaustion) {
-        return this.register(path, new DamageType(message, exhaustion));
+        return this.register(path, () -> new DamageType(message, exhaustion));
     }
 }

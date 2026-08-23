@@ -30,6 +30,7 @@ import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 import survivalblock.atmosphere.registrar.special.SpecialRegistrant;
 
@@ -37,12 +38,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * A special {@link survivalblock.atmosphere.registrar.Registrant} for dynamic registries.
  * {@link DynamicRegistrant#bootstrap(BootstrapContext)} can be used as a {@link RegistrySetBuilder.RegistryBootstrap}
  * @see net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint#buildRegistry(RegistrySetBuilder) 
  */
+@ApiStatus.Experimental
 public class DynamicRegistrant<T> extends SpecialRegistrant {
     protected final ResourceKey<? extends Registry<T>> registry;
 
@@ -63,13 +66,13 @@ public class DynamicRegistrant<T> extends SpecialRegistrant {
     }
 
     public ResourceKey<T> register(String path, T obj) {
-        //noinspection unused
-        return this.register(path, registerable -> obj);
+        return this.register(path, () -> obj);
     }
 
-    protected ResourceKey<T> register(String path, Function<BootstrapContext<T>, T> objCreator) {
+    public ResourceKey<T> register(String path, Supplier<T> supplier) {
         ResourceKey<T> key = this.register(path);
-        this.maybeAdd(key, objCreator);
+        //noinspection unused
+        this.maybeAdd(key, registerable -> supplier.get());
         return key;
     }
 
@@ -104,7 +107,6 @@ public class DynamicRegistrant<T> extends SpecialRegistrant {
         }
     }
 
-    @SuppressWarnings("unused")
     public interface SingleObjectCreator<T> extends Creator<T> {
         void define(T obj);
     }
@@ -133,11 +135,9 @@ public class DynamicRegistrant<T> extends SpecialRegistrant {
             //noinspection unchecked
             return (HolderGetter<U>) this.lookupMap.get(key);
         }
-
-        public abstract T build(ResourceKey<T> key);
     }
 
-    @SuppressWarnings("unused")
+    @ApiStatus.Experimental
     public class SingleObjectCreatorImpl extends CreatorImpl implements SingleObjectCreator<T> {
         @Nullable
         protected T obj;
@@ -146,7 +146,6 @@ public class DynamicRegistrant<T> extends SpecialRegistrant {
             super(registerable);
         }
 
-        @Override
         public T build(ResourceKey<T> key) {
             return Objects.requireNonNull(this.obj);
         }

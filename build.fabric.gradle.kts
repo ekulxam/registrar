@@ -11,6 +11,13 @@ plugins {
     id("dev.kikugie.fletching-table.fabric")
 }
 
+sourceSets {
+    create("testmod") {
+        compileClasspath += main.get().output + main.get().compileClasspath
+        runtimeClasspath += main.get().output + main.get().runtimeClasspath
+    }
+}
+
 version = "${project.property("mod_version")}+${stonecutter.current.version}"
 group = project.property("maven_group") as String
 val minecraft : String = if (hasProperty("deps.minecraft")) project.property("deps.minecraft") as String
@@ -125,6 +132,39 @@ loom {
     }
 
     fabricModJsonPath = rootProject.file("src/main/resources/fabric.mod.json")
+
+    runs {
+        create("testmodClient") {
+            client()
+            configName = "Testmod Client"
+            source(sourceSets["testmod"])
+        }
+
+        create("testmodServer") {
+            server()
+            name = "Testmod Server"
+            source(sourceSets["testmod"])
+        }
+
+        create("testmodDatagen") {
+            client()
+            name = "Testmod Data Generation"
+            vmArg("-Dfabric-api.datagen")
+            vmArg("-Dfabric-api.datagen.output-dir=${file("src/testmod/generated")}")
+            vmArg("-Dfabric-api.datagen.modid=registrar_test")
+            runDir("build/datagen")
+            source(sourceSets["testmod"])
+        }
+    }
+
+    mods {
+        create("registrar") {
+            sourceSet(sourceSets.main.get())
+        }
+        create("registrar_test") {
+            sourceSet("testmod")
+        }
+    }
 }
 
 java {

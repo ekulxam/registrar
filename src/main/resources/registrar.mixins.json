@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "survivalblock.atmosphere.registrar.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "SinglePoolElementAccessor"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

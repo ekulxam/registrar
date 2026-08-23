@@ -1,0 +1,23 @@
+{
+	"schemaVersion": 1,
+	"id": "registrar_testmod",
+	"version": "1",
+	"name": "Registrar Testmod",
+	"description": "",
+	"authors": [
+		"Survivalblock"
+	],
+	"environment": "*",
+	"entrypoints": {
+        "main": [
+          "survivalblock.atmosphere.registar_testmod.RegistrarTestmod"
+        ]
+	},
+	"depends": {
+		"fabricloader": "*",
+        "minecraft": "*",
+		"java": ">=21",
+        "registrar": "*",
+		"fabric-api": "*"
+	}
+}

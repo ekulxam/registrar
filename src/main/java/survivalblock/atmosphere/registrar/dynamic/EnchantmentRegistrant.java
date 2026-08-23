@@ -74,7 +74,6 @@ public class EnchantmentRegistrant extends DynamicRegistrant<Enchantment> {
 
     @SuppressWarnings("UnusedReturnValue")
     public interface EnchantmentCreator extends Creator<Enchantment> {
-
         default HolderGetter<Item> itemLookup() {
             return this.lookup(Registries.ITEM);
         }
@@ -127,7 +126,6 @@ public class EnchantmentRegistrant extends DynamicRegistrant<Enchantment> {
             return this;
         }
 
-        @Override
         public Enchantment build(ResourceKey<Enchantment> key) {
             return Objects.requireNonNull(this.builder).build(key./*? <1.21.11 {*/ /*location() *//*?} else {*/ identifier() /*?}*/);
         }
