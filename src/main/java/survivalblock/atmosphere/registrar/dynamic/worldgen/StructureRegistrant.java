@@ -89,9 +89,15 @@ public class StructureRegistrant extends DynamicRegistrant<Structure> {
             return ConstantHeight.of(VerticalAnchor.absolute(y));
         }
 
+        //? if >=1.21.9 {
         default JigsawStructure.MaxDistance maxDistance(int distance) {
             return new JigsawStructure.MaxDistance(distance);
         }
+        //?} else {
+        /*default int maxDistance(int distance) {
+            return distance;
+        }
+        *///?}
     }
 
     public class StructureCreatorImpl extends SingleObjectCreatorImpl implements StructureCreator {
