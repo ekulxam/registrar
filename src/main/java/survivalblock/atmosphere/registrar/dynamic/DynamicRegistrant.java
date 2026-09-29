@@ -30,6 +30,7 @@ import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.tags.TagKey;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 import survivalblock.atmosphere.registrar.special.SpecialRegistrant;
@@ -74,6 +75,11 @@ public class DynamicRegistrant<T> extends SpecialRegistrant {
         //noinspection unused
         this.maybeAdd(key, registerable -> supplier.get());
         return key;
+    }
+
+    @SuppressWarnings("unused")
+    public TagKey<T> tag(String path) {
+        return TagKey.create(this.registry, this.idFunction.apply(path));
     }
 
     protected void maybeAdd(ResourceKey<T> key, Function<BootstrapContext<T>, T> objCreator) {

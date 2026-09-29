@@ -26,6 +26,7 @@ package survivalblock.atmosphere.registrar.shared;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.TagKey;
 
 public interface IRegistrant<T> {
     default Registry<T> getRegistry() {
@@ -46,5 +47,10 @@ public interface IRegistrant<T> {
 
     default <U extends T> U register(ResourceKey<T> key, U obj) {
         return Registry.register(this.getRegistry(), key, obj);
+    }
+
+    @SuppressWarnings("unused")
+    default TagKey<T> tag(String path) {
+        return TagKey.create(this.getRegistry().key(), this.id(path));
     }
 }

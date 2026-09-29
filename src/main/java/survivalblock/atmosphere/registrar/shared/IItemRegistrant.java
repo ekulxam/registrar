@@ -113,8 +113,12 @@ public interface IItemRegistrant extends IRegistrant<Item> {
      * @return all successfully registered items
      */
     default Map<? extends Block, ? extends Item> registerFromAnnotations(Class<?> clazz, boolean tryAllByDefault) {
+        return this.registerFromAnnotations(clazz, tryAllByDefault, clazz.getDeclaredFields());
+    }
+
+    default Map<? extends Block, ? extends Item> registerFromAnnotations(Class<?> clazz, boolean tryAllByDefault, Field[] fields) {
         ImmutableMap.Builder<Block, Item> builder = ImmutableMap.builder();
-        for (Field field : clazz.getFields()) {
+        for (Field field : fields) {
             try {
                 Class<? extends Item> blockItemClass;
                 //? if >1.21.1
