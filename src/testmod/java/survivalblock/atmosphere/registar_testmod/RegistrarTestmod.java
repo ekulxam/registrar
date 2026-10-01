@@ -25,7 +25,7 @@ package survivalblock.atmosphere.registar_testmod;
 
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.resources.Identifier;
-import survivalblock.atmosphere.registar_testmod.init.TestStructures;
+import survivalblock.atmosphere.registar_testmod.init.*;
 
 public class RegistrarTestmod implements ModInitializer {
     public static final String MOD_ID = "registrar_testmod";
@@ -33,6 +33,7 @@ public class RegistrarTestmod implements ModInitializer {
     @Override
     public void onInitialize() {
         TestStructures.init();
+        TestBlocks.init();
     }
 
     public static Identifier id(String path) {

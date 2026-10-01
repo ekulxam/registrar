@@ -29,7 +29,12 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import survivalblock.atmosphere.registrar.Registrant;
+import survivalblock.atmosphere.registrar.annotation.ConstructBlock;
 
+import java.lang.reflect.Field;
+import java.util.List;
+import java.util.Locale;
 import java.util.function.Function;
 
 public interface IBlockRegistrant extends IRegistrant<Block> {
@@ -62,4 +67,27 @@ public interface IBlockRegistrant extends IRegistrant<Block> {
         return BlockItemId.create(this.id(block), this.id(item));
     }
     //?}
+
+    default <T extends Block, S extends BlockBehaviour.Properties> T register(Function<S, T> blockFunction, S settings) {
+        String name = null;
+        try {
+            Class<?> clazz = Registrant.STACK_WALKER.getCallerClass();
+            for (Field field : clazz.getDeclaredFields()) {
+                if (!field.isAnnotationPresent(ConstructBlock.class)) {
+                    continue;
+                }
+                field.setAccessible(true);
+                if (field.get(null) != null) {
+                    continue;
+                }
+                name = field.getName();
+            }
+            if (name == null) {
+                throw new NoSuchFieldException("Field annotated with ConstructBlock was not found in class " + clazz.getName());
+            }
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+        return register(this.createId(name.toLowerCase(Locale.ROOT)), blockFunction, settings);
+    }
 }

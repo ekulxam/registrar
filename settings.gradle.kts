@@ -9,8 +9,8 @@ pluginManagement {
 }
 
 plugins {
-    id("dev.kikugie.stonecutter") version "0.9.7"
-    id("dev.kikugie.loom-back-compat") version "0.4"
+    id("dev.kikugie.stonecutter") version "0.9.8"
+    id("dev.kikugie.loom-back-compat") version "0.4.3"
 }
 
 rootProject.name = "registrar"

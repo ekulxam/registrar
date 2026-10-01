@@ -33,6 +33,7 @@ import java.util.function.Function;
 
 public class Registrant<T> implements IRegistrant<T> {
     public static final Logger LOGGER = LoggerFactory.getLogger("Registrar");
+    public static final StackWalker STACK_WALKER = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
 
     protected final Function<String, Identifier> idFunction;
     protected final Registry<T> registry;

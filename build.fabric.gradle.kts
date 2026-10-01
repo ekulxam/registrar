@@ -13,8 +13,8 @@ plugins {
 
 sourceSets {
     create("testmod") {
-        compileClasspath += main.get().output + main.get().compileClasspath
-        runtimeClasspath += main.get().output + main.get().runtimeClasspath
+        compileClasspath += main.get().compileClasspath
+        runtimeClasspath += main.get().runtimeClasspath
     }
 }
 
@@ -60,6 +60,8 @@ dependencies {
     if (stonecutter.eval(minecraft, "<1.21.11")) {
         modCompileOnly("org.jspecify:jspecify:1.0.0")
     }
+
+    "testmodImplementation"(sourceSets.main.get().output)
 }
 
 stonecutter {
@@ -122,16 +124,14 @@ tasks.register("autoVersionChangelog") {
 }
 
 loom {
-    runConfigs.all {
-        ideConfigGenerated(true)
-        runDir = "../../run"
+    mods {
+        create("registrar") {
+            sourceSet(sourceSets.main.get())
+        }
+        create("registrar_test") {
+            sourceSet("testmod")
+        }
     }
-
-    runConfigs["client"].apply {
-        programArgs("--username=Survivalblock", "--uuid=c45e97e6-94ef-42da-8b5e-0c3209551c3f")
-    }
-
-    fabricModJsonPath = rootProject.file("src/main/resources/fabric.mod.json")
 
     runs {
         create("testmodClient") {
@@ -157,14 +157,16 @@ loom {
         }
     }
 
-    mods {
-        create("registrar") {
-            sourceSet(sourceSets.main.get())
-        }
-        create("registrar_test") {
-            sourceSet("testmod")
-        }
+    runConfigs.all {
+        ideConfigGenerated(true)
+        runDir = "../../run"
     }
+
+    runConfigs["client"].apply {
+        programArgs("--username=Survivalblock", "--uuid=c45e97e6-94ef-42da-8b5e-0c3209551c3f")
+    }
+
+    fabricModJsonPath = rootProject.file("src/main/resources/fabric.mod.json")
 }
 
 java {
