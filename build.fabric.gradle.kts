@@ -13,8 +13,8 @@ plugins {
 
 sourceSets {
     create("testmod") {
-        compileClasspath += main.get().compileClasspath
-        runtimeClasspath += main.get().runtimeClasspath
+        compileClasspath += main.get().output + main.get().compileClasspath
+        runtimeClasspath += main.get().output + main.get().runtimeClasspath
     }
 }
 
@@ -60,8 +60,6 @@ dependencies {
     if (stonecutter.eval(minecraft, "<1.21.11")) {
         modCompileOnly("org.jspecify:jspecify:1.0.0")
     }
-
-    "testmodImplementation"(sourceSets.main.get().output)
 }
 
 stonecutter {

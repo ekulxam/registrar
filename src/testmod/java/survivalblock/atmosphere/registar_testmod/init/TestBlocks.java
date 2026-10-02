@@ -5,11 +5,13 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import org.jetbrains.annotations.ApiStatus;
 import survivalblock.atmosphere.registar_testmod.RegistrarTestmod;
 import survivalblock.atmosphere.registrar.BlockRegistrant;
+import survivalblock.atmosphere.registrar.annotation.ConstructBlock;
 
 @ApiStatus.NonExtendable
 public interface TestBlocks {
     BlockRegistrant BLOCK_REGISTRANT = new BlockRegistrant(RegistrarTestmod.MOD_ID);
 
+    @ConstructBlock
     Block TEST_BLOCK = BLOCK_REGISTRANT.register(Block::new, BlockBehaviour.Properties.of());
 
     static void init() {

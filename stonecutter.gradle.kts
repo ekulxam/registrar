@@ -5,7 +5,7 @@ plugins {
     id("com.modrinth.minotaur") version "2.+" apply false
     kotlin("jvm") version "2.3.0" apply false
     id("com.google.devtools.ksp") version "2.3.0" apply false
-    id("dev.kikugie.fletching-table.fabric") version "0.1.0-alpha.22" apply false
+    id("dev.kikugie.fletching-table.fabric") version "0.2.0-alpha.9" apply false
     id("com.diffplug.spotless") version "7.0.2"
 }
 
