@@ -23,6 +23,7 @@
  */
 package survivalblock.atmosphere.registrar.shared;
 
+import com.mojang.datafixers.util.Pair;
 //? if >=26.2
 import net.minecraft.references.BlockItemId;
 import net.minecraft.resources.ResourceKey;
@@ -33,7 +34,6 @@ import survivalblock.atmosphere.registrar.Registrant;
 import survivalblock.atmosphere.registrar.annotation.ConstructBlock;
 
 import java.lang.reflect.Field;
-import java.util.List;
 import java.util.Locale;
 import java.util.function.Function;
 
@@ -69,6 +69,13 @@ public interface IBlockRegistrant extends IRegistrant<Block> {
     //?}
 
     default <T extends Block, S extends BlockBehaviour.Properties> T register(Function<S, T> blockFunction, S settings) {
+        //~ if >=26.2 'registerAndGrabKey' -> 'registerAndGrabIds'
+        return this.registerAndGrabIds(blockFunction, settings).getFirst();
+    }
+
+    //? if >=26.2
+    @Deprecated(since = "Minecraft 26.2")
+    default <T extends Block, S extends BlockBehaviour.Properties> Pair<T, ResourceKey<Block>> registerAndGrabKey(Function<S, T> blockFunction, S settings) {
         String name = null;
         try {
             Class<?> clazz = Registrant.STACK_WALKER.getCallerClass();
@@ -88,6 +95,33 @@ public interface IBlockRegistrant extends IRegistrant<Block> {
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
-        return register(this.createId(name.toLowerCase(Locale.ROOT)), blockFunction, settings);
+        ResourceKey<Block> key = this.createKey(name.toLowerCase(Locale.ROOT));
+        return Pair.of(this.register(key, blockFunction, settings), key);
     }
+
+    //? if >=26.2 {
+    default <T extends Block, S extends BlockBehaviour.Properties> Pair<T, BlockItemId> registerAndGrabIds(Function<S, T> blockFunction, S settings) {
+        String name = null;
+        try {
+            Class<?> clazz = Registrant.STACK_WALKER.getCallerClass();
+            for (Field field : clazz.getDeclaredFields()) {
+                if (!field.isAnnotationPresent(ConstructBlock.class)) {
+                    continue;
+                }
+                field.setAccessible(true);
+                if (field.get(null) != null) {
+                    continue;
+                }
+                name = field.getName();
+            }
+            if (name == null) {
+                throw new NoSuchFieldException("Field annotated with ConstructBlock was not found in class " + clazz.getName());
+            }
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+        BlockItemId ids = this.createId(name.toLowerCase(Locale.ROOT));
+        return Pair.of(this.register(ids, blockFunction, settings), ids);
+    }
+    //?}
 }
