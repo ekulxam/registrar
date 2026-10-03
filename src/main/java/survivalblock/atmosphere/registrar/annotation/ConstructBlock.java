@@ -23,11 +23,21 @@
  */
 package survivalblock.atmosphere.registrar.annotation;
 
+import net.minecraft.world.level.block.state.BlockBehaviour;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.function.Function;
 
+/**
+ * Annotated on {@link net.minecraft.world.level.block.Block}s for registration without
+ * explicitly specifying block name/id.
+ * @see survivalblock.atmosphere.registrar.shared.IBlockRegistrant#register(Function, BlockBehaviour.Properties)
+ * @see survivalblock.atmosphere.registrar.shared.IBlockRegistrant#registerAndGrabKey(Function, BlockBehaviour.Properties)
+ * @see survivalblock.atmosphere.registrar.shared.IBlockRegistrant#registerAndGrabIds(Function, BlockBehaviour.Properties)
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface ConstructBlock {

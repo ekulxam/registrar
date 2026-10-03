@@ -30,12 +30,13 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.Field;
 
 /**
  * Annotated on {@link net.minecraft.world.level.block.Block}s (<26.2) and
  * {@link net.minecraft.references.BlockItemId}s (>=26.2) for registration via reflection.
- * @see survivalblock.atmosphere.registrar.ItemRegistrant#registerFromAnnotations(Class, boolean)
- * @see survivalblock.atmosphere.registrar.delayed.DelayedItemRegistrant#registerFromAnnotations(Class, boolean)
+ * @see survivalblock.atmosphere.registrar.shared.IItemRegistrant#registerFromAnnotations(Class, boolean)
+ * @see survivalblock.atmosphere.registrar.shared.IItemRegistrant#registerFromAnnotations(Class, boolean, Field[])
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

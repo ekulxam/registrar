@@ -116,6 +116,14 @@ public interface IItemRegistrant extends IRegistrant<Item> {
         return this.registerFromAnnotations(clazz, tryAllByDefault, clazz.getDeclaredFields());
     }
 
+    /**
+     * Uses reflection to add {@link Item}s from {@linkplain Block}s (<26.2) or {@linkplain BlockItemId}s (>=26.2).
+     * Note that this method requires the Blocks to all be registered.
+     * @param clazz the class containing the {@linkplain Block}s (<26.2) or {@linkplain BlockItemId}s (>=26.2)
+     * @param tryAllByDefault true to attempt registration, even if no annotation is present
+     * @param fields the fields to try deriving items from
+     * @return all successfully registered items
+     */
     default Map<? extends Block, ? extends Item> registerFromAnnotations(Class<?> clazz, boolean tryAllByDefault, Field[] fields) {
         ImmutableMap.Builder<Block, Item> builder = ImmutableMap.builder();
         for (Field field : fields) {
