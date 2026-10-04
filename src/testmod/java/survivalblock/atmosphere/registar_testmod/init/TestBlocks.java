@@ -38,6 +38,6 @@ public interface TestBlocks {
     Block TEST_BLOCK = BLOCK_REGISTRANT.register(Block::new, BlockBehaviour.Properties.of());
 
     static void init() {
-        // NO-OP
+        ConstructBlockClassTest.init();
     }
 }

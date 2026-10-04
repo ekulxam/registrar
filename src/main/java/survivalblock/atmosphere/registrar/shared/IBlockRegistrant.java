@@ -34,6 +34,7 @@ import survivalblock.atmosphere.registrar.Registrant;
 import survivalblock.atmosphere.registrar.annotation.ConstructBlock;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Locale;
 import java.util.function.Function;
 
@@ -70,42 +71,48 @@ public interface IBlockRegistrant extends IRegistrant<Block> {
 
     default <T extends Block, S extends BlockBehaviour.Properties> T register(Function<S, T> blockFunction, S settings) {
         //~ if >=26.2 'registerAndGrabKey' -> 'registerAndGrabIds'
-        return this.registerAndGrabIds(blockFunction, settings).getFirst();
+        return this.registerAndGrabIds(blockFunction, settings, Registrant.STACK_WALKER.getCallerClass()).getFirst();
     }
 
     //? if >=26.2
     @Deprecated(since = "Minecraft 26.2")
     default <T extends Block, S extends BlockBehaviour.Properties> Pair<T, ResourceKey<Block>> registerAndGrabKey(Function<S, T> blockFunction, S settings) {
-        String name = null;
-        try {
-            Class<?> clazz = Registrant.STACK_WALKER.getCallerClass();
-            for (Field field : clazz.getDeclaredFields()) {
-                if (!field.isAnnotationPresent(ConstructBlock.class)) {
-                    continue;
-                }
-                field.setAccessible(true);
-                if (field.get(null) != null) {
-                    continue;
-                }
-                name = field.getName();
-            }
-            if (name == null) {
-                throw new NoSuchFieldException("Field annotated with ConstructBlock was not found in class " + clazz.getName());
-            }
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
-        }
+        return this.registerAndGrabKey(blockFunction, settings, Registrant.STACK_WALKER.getCallerClass());
+    }
+
+    //? if >=26.2
+    @Deprecated(since = "Minecraft 26.2")
+    default <T extends Block, S extends BlockBehaviour.Properties> Pair<T, ResourceKey<Block>> registerAndGrabKey(Function<S, T> blockFunction, S settings, Class<?> callingClass) {
+        String name = tryGrabFieldName(callingClass);
         ResourceKey<Block> key = this.createKey(name.toLowerCase(Locale.ROOT));
         return Pair.of(this.register(key, blockFunction, settings), key);
     }
 
     //? if >=26.2 {
     default <T extends Block, S extends BlockBehaviour.Properties> Pair<T, BlockItemId> registerAndGrabIds(Function<S, T> blockFunction, S settings) {
+        return this.registerAndGrabIds(blockFunction, settings, Registrant.STACK_WALKER.getCallerClass());
+    }
+
+    default <T extends Block, S extends BlockBehaviour.Properties> Pair<T, BlockItemId> registerAndGrabIds(Function<S, T> blockFunction, S settings, Class<?> callingClass) {
+        String name = tryGrabFieldName(callingClass);
+        BlockItemId ids = this.createId(name.toLowerCase(Locale.ROOT));
+        return Pair.of(this.register(ids, blockFunction, settings), ids);
+    }
+    //?}
+
+    private static String tryGrabFieldName(Class<?> clazz) {
         String name = null;
+        boolean allowByDefault = clazz.isAnnotationPresent(ConstructBlock.class);
         try {
-            Class<?> clazz = Registrant.STACK_WALKER.getCallerClass();
             for (Field field : clazz.getDeclaredFields()) {
-                if (!field.isAnnotationPresent(ConstructBlock.class)) {
+                if (allowByDefault) {
+                    if (!Modifier.isStatic(field.getModifiers())) {
+                        continue;
+                    }
+                } else if (!field.isAnnotationPresent(ConstructBlock.class)) {
+                    continue;
+                }
+                if (!Block.class.isAssignableFrom(field.getType())) {
                     continue;
                 }
                 field.setAccessible(true);
@@ -120,8 +127,6 @@ public interface IBlockRegistrant extends IRegistrant<Block> {
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
-        BlockItemId ids = this.createId(name.toLowerCase(Locale.ROOT));
-        return Pair.of(this.register(ids, blockFunction, settings), ids);
+        return name;
     }
-    //?}
 }

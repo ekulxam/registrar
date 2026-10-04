@@ -21,25 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package survivalblock.atmosphere.registrar.annotation;
+package survivalblock.atmosphere.registar_testmod.init;
 
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import org.jetbrains.annotations.ApiStatus;
+import survivalblock.atmosphere.registar_testmod.RegistrarTestmod;
+import survivalblock.atmosphere.registrar.BlockRegistrant;
+import survivalblock.atmosphere.registrar.annotation.ConstructBlock;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.util.function.Function;
+@ConstructBlock
+@ApiStatus.NonExtendable
+public interface ConstructBlockClassTest {
+    Block TEST_BLOCK_TWO = TestBlocks.BLOCK_REGISTRANT.register(Block::new, BlockBehaviour.Properties.of());
 
-/**
- * Annotated on {@link net.minecraft.world.level.block.Block}s for registration without
- * explicitly specifying block name/id. Alternatively, annotated on a class to give
- * the above behaviour to all static Block fields in that class.
- * @see survivalblock.atmosphere.registrar.shared.IBlockRegistrant#register(Function, BlockBehaviour.Properties)
- * @see survivalblock.atmosphere.registrar.shared.IBlockRegistrant#registerAndGrabKey(Function, BlockBehaviour.Properties)
- * @see survivalblock.atmosphere.registrar.shared.IBlockRegistrant#registerAndGrabIds(Function, BlockBehaviour.Properties)
- */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.TYPE})
-public @interface ConstructBlock {
+    static void init() {
+        // NO-OP
+    }
 }
