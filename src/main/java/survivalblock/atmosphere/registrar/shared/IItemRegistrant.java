@@ -182,7 +182,7 @@ public interface IItemRegistrant extends IRegistrant<Item> {
                 block = (Block) obj;
                 *///?}
 
-                Item item = this.constructItem(useBlockTranslation, blockItemClass, block /*? >=26.2 {*/, id/*?}*/);
+                Item item = this.constructItem(/*? >1.21.1 {*/useBlockTranslation,/*?}*/ blockItemClass, block /*? >=26.2 {*/, id/*?}*/);
 
                 builder.put(block, item);
             } catch (ReflectiveOperationException e) {
@@ -192,7 +192,7 @@ public interface IItemRegistrant extends IRegistrant<Item> {
         return builder.build();
     }
 
-    default Item constructItem(boolean useBlockTranslation, Class<? extends Item> blockItemClass, Block block/*? >=26.2 {*/, @Nullable BlockItemId id/*?}*/) throws NoSuchMethodException {
+    default Item constructItem(/*? >1.21.1 {*/boolean useBlockTranslation,/*?}*/ Class<? extends Item> blockItemClass, Block block/*? >=26.2 {*/, @Nullable BlockItemId id/*?}*/) throws NoSuchMethodException {
         Item.Properties settings = new Item.Properties();
         //? if >1.21.1 {
         if (useBlockTranslation) {
