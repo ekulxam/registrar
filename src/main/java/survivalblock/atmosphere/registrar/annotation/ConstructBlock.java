@@ -36,8 +36,7 @@ import java.util.function.Function;
  * explicitly specifying block name/id. Alternatively, annotated on a class to give
  * the above behaviour to all static Block fields in that class.
  * @see survivalblock.atmosphere.registrar.shared.IBlockRegistrant#register(Function, BlockBehaviour.Properties)
- * @see survivalblock.atmosphere.registrar.shared.IBlockRegistrant#registerAndGrabKey(Function, BlockBehaviour.Properties)
- * @see survivalblock.atmosphere.registrar.shared.IBlockRegistrant#registerAndGrabIds(Function, BlockBehaviour.Properties)
+ * @see survivalblock.atmosphere.registrar.shared.IBlockRegistrant#registerAndPresent(Function, BlockBehaviour.Properties)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.TYPE})

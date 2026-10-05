@@ -27,12 +27,16 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
+import org.jspecify.annotations.Nullable;
 import survivalblock.atmosphere.registrar.shared.IBlockRegistrant;
 
 import java.util.function.Function;
 
 @SuppressWarnings("unused")
 public class DelayedBlockRegistrant extends DelayedRegistrant<Block> implements IBlockRegistrant {
+    @Nullable
+    protected DelayedItemRegistrant itemRegistrant;
+
     protected DelayedBlockRegistrant(String modId, Registry<Block> registry) {
         super(modId, registry);
     }
@@ -47,5 +51,28 @@ public class DelayedBlockRegistrant extends DelayedRegistrant<Block> implements 
 
     public DelayedBlockRegistrant(Function<String, Identifier> idFunction) {
         this(idFunction, BuiltInRegistries.BLOCK);
+    }
+
+    @Nullable
+    @Override
+    public DelayedItemRegistrant getItemRegistrant() {
+        return this.itemRegistrant;
+    }
+
+    @Override
+    public DelayedItemRegistrant getOrCreateItemRegistrant() {
+        if (this.itemRegistrant == null) {
+            this.itemRegistrant = new DelayedItemRegistrant(this::id);
+        }
+        return this.itemRegistrant;
+    }
+
+    @Override
+    public void consumeAll() {
+        super.consumeAll();
+
+        if (this.itemRegistrant != null) {
+            this.itemRegistrant.consumeAll();
+        }
     }
 }

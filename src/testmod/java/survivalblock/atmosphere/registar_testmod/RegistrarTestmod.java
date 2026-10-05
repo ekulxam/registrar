@@ -24,19 +24,60 @@
 package survivalblock.atmosphere.registar_testmod;
 
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import survivalblock.atmosphere.registar_testmod.init.*;
+import survivalblock.atmosphere.registrar.wrapper.BlockPresenter;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 public class RegistrarTestmod implements ModInitializer {
     public static final String MOD_ID = "registrar_testmod";
+    public static final Logger LOGGER = LoggerFactory.getLogger("Registrar Testmod");
 
     @Override
     public void onInitialize() {
         TestStructures.init();
         TestBlocks.init();
+
+        logAllOrSomething(TestBlocks.class);
+        logAllOrSomething(ConstructBlockClassTest.class);
+        logAllOrSomething(OohShinyBlocks.class);
     }
 
     public static Identifier id(String path) {
         return Identifier.fromNamespaceAndPath(MOD_ID, path);
+    }
+
+    public static void logAllOrSomething(Class<?> clazz) {
+        for (Field field : clazz.getDeclaredFields()) {
+            try {
+                if (!Modifier.isStatic(field.getModifiers())) {
+                    continue;
+                }
+                field.setAccessible(true);
+                Object obj = field.get(null);
+                if (obj instanceof Block block) {
+                    LOGGER.info("Registered Block \"{}\" from field {} in class {}", BuiltInRegistries.BLOCK.getKey(block), field.getName(), clazz.getName());
+                } else if (obj instanceof BlockPresenter<?> blockPresenter) {
+                    Block block = blockPresenter.getBlock();
+                    LOGGER.info("Registered BlockPresenter \"{}\" from field {} in class {}", BuiltInRegistries.BLOCK.getKey(block), field.getName(), clazz.getName());
+                    Item possibility = blockPresenter.asItem();
+                    if (possibility != Items.AIR) {
+                        LOGGER.info("Registered BlockPresented Item \"{}\" from field {} in class {}", BuiltInRegistries.ITEM.getKey(possibility), field.getName(), clazz.getName());
+                    }
+                } else if (obj instanceof Item item) {
+                    LOGGER.info("Registered Item \"{}\" from field {} in class {}", BuiltInRegistries.ITEM.getKey(item), field.getName(), clazz.getName());
+                }
+            } catch (ReflectiveOperationException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }

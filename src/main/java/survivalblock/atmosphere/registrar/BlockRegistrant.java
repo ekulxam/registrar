@@ -27,12 +27,17 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
+import org.jspecify.annotations.Nullable;
 import survivalblock.atmosphere.registrar.shared.IBlockRegistrant;
+import survivalblock.atmosphere.registrar.shared.IItemRegistrant;
 
 import java.util.function.Function;
 
 @SuppressWarnings("unused")
 public class BlockRegistrant extends Registrant<Block> implements IBlockRegistrant {
+    @Nullable
+    protected ItemRegistrant itemRegistrant;
+
     protected BlockRegistrant(String modId, Registry<Block> registry) {
         super(modId, registry);
     }
@@ -47,5 +52,19 @@ public class BlockRegistrant extends Registrant<Block> implements IBlockRegistra
 
     public BlockRegistrant(Function<String, Identifier> idFunction) {
         this(idFunction, BuiltInRegistries.BLOCK);
+    }
+
+    @Nullable
+    @Override
+    public ItemRegistrant getItemRegistrant() {
+        return this.itemRegistrant;
+    }
+
+    @Override
+    public ItemRegistrant getOrCreateItemRegistrant() {
+        if (this.itemRegistrant == null) {
+            this.itemRegistrant = new ItemRegistrant(this::id);
+        }
+        return this.itemRegistrant;
     }
 }

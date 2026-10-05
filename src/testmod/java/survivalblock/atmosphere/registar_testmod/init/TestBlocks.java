@@ -39,5 +39,6 @@ public interface TestBlocks {
 
     static void init() {
         ConstructBlockClassTest.init();
+        OohShinyBlocks.init();
     }
 }

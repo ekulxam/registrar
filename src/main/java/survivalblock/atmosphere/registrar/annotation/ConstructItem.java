@@ -34,9 +34,11 @@ import java.lang.reflect.Field;
 
 /**
  * Annotated on {@link net.minecraft.world.level.block.Block}s (<26.2) and
- * {@link net.minecraft.references.BlockItemId}s (>=26.2) for registration via reflection.
- * @see survivalblock.atmosphere.registrar.shared.IItemRegistrant#registerFromAnnotations(Class, boolean)
- * @see survivalblock.atmosphere.registrar.shared.IItemRegistrant#registerFromAnnotations(Class, boolean, Field[])
+ * {@link net.minecraft.references.BlockItemId}s (>=26.2) for
+ * {@linkplain survivalblock.atmosphere.registrar.shared.IItemRegistrant#registerFromAnnotations(Class, boolean) registration via reflection}.
+ * <p>
+ * Alternatively, annotated on {@link survivalblock.atmosphere.registrar.wrapper.BlockPresenter}s
+ * to also construct the {@link Item}.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

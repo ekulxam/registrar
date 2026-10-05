@@ -23,15 +23,17 @@
  */
 package survivalblock.atmosphere.registrar.shared;
 
-import com.mojang.datafixers.util.Pair;
 //? if >=26.2
 import net.minecraft.references.BlockItemId;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import org.jspecify.annotations.Nullable;
 import survivalblock.atmosphere.registrar.Registrant;
 import survivalblock.atmosphere.registrar.annotation.ConstructBlock;
+import survivalblock.atmosphere.registrar.annotation.ConstructItem;
+import survivalblock.atmosphere.registrar.wrapper.BlockPresenter;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -69,39 +71,60 @@ public interface IBlockRegistrant extends IRegistrant<Block> {
     }
     //?}
 
+    @SuppressWarnings("unused")
+    @Nullable
+    IItemRegistrant getItemRegistrant();
+
+    IItemRegistrant getOrCreateItemRegistrant();
+
     default <T extends Block, S extends BlockBehaviour.Properties> T register(Function<S, T> blockFunction, S settings) {
         //~ if >=26.2 'registerAndGrabKey' -> 'registerAndGrabIds'
-        return this.registerAndGrabIds(blockFunction, settings, Registrant.STACK_WALKER.getCallerClass()).getFirst();
+        return this.registerAndPresent(blockFunction, settings, Registrant.STACK_WALKER.getCallerClass()).getBlock();
     }
 
-    //? if >=26.2
-    @Deprecated(since = "Minecraft 26.2")
-    default <T extends Block, S extends BlockBehaviour.Properties> Pair<T, ResourceKey<Block>> registerAndGrabKey(Function<S, T> blockFunction, S settings) {
-        return this.registerAndGrabKey(blockFunction, settings, Registrant.STACK_WALKER.getCallerClass());
+    default <T extends Block, S extends BlockBehaviour.Properties> BlockPresenter<T> registerAndPresent(Function<S, T> blockFunction, S settings) {
+        return this.registerAndPresent(blockFunction, settings, Registrant.STACK_WALKER.getCallerClass());
     }
 
-    //? if >=26.2
-    @Deprecated(since = "Minecraft 26.2")
-    default <T extends Block, S extends BlockBehaviour.Properties> Pair<T, ResourceKey<Block>> registerAndGrabKey(Function<S, T> blockFunction, S settings, Class<?> callingClass) {
-        String name = tryGrabFieldName(callingClass);
-        ResourceKey<Block> key = this.createKey(name.toLowerCase(Locale.ROOT));
-        return Pair.of(this.register(key, blockFunction, settings), key);
+    @SuppressWarnings("unused")
+    default <T extends Block, S extends BlockBehaviour.Properties> BlockPresenter<T> registerAndPresent(String name, Function<S, T> blockFunction, S settings) {
+        return this.registerAndPresent(name, blockFunction, settings, tryGrabInitializingBlock(Registrant.STACK_WALKER.getCallerClass()));
     }
 
-    //? if >=26.2 {
-    default <T extends Block, S extends BlockBehaviour.Properties> Pair<T, BlockItemId> registerAndGrabIds(Function<S, T> blockFunction, S settings) {
-        return this.registerAndGrabIds(blockFunction, settings, Registrant.STACK_WALKER.getCallerClass());
+    default <T extends Block, S extends BlockBehaviour.Properties> BlockPresenter<T> registerAndPresent(String name, Function<S, T> blockFunction, S settings, Field field) {
+        ConstructItem constructItem = field.getAnnotation(ConstructItem.class);
+        boolean item = constructItem != null && !constructItem.exclude();
+        //? if >=26.2
+        BlockItemId ids = item ? this.createId(name) : null;
+        ResourceKey<Block> key = this.createKey(name);
+        T block;
+        //? if >=26.2 {
+        if (ids == null) {
+            block = this.register(key, blockFunction, settings);
+        } else {
+            block = this.register(ids, blockFunction, settings);
+        }
+        //?} else {
+        /*block = this.register(key, blockFunction, settings);
+         *///?}
+        if (item) {
+            try {
+                this.getOrCreateItemRegistrant().constructItem(constructItem.useBlockTranslation(), constructItem.constructor(), block/*? >=26.2 {*/, ids/*?}*/);
+            } catch (ReflectiveOperationException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return new BlockPresenter<>(block, key /*? >=26.2 {*/, ids/*?}*/);
     }
 
-    default <T extends Block, S extends BlockBehaviour.Properties> Pair<T, BlockItemId> registerAndGrabIds(Function<S, T> blockFunction, S settings, Class<?> callingClass) {
-        String name = tryGrabFieldName(callingClass);
-        BlockItemId ids = this.createId(name.toLowerCase(Locale.ROOT));
-        return Pair.of(this.register(ids, blockFunction, settings), ids);
+    default <T extends Block, S extends BlockBehaviour.Properties> BlockPresenter<T> registerAndPresent(Function<S, T> blockFunction, S settings, Class<?> callingClass) {
+        Field field = tryGrabInitializingBlock(callingClass);
+        String name = field.getName().toLowerCase(Locale.ROOT);
+        return this.registerAndPresent(name, blockFunction, settings, field);
     }
-    //?}
 
-    private static String tryGrabFieldName(Class<?> clazz) {
-        String name = null;
+    static Field tryGrabInitializingBlock(Class<?> clazz) {
+        Field target = null;
         boolean allowByDefault = clazz.isAnnotationPresent(ConstructBlock.class);
         try {
             for (Field field : clazz.getDeclaredFields()) {
@@ -112,21 +135,23 @@ public interface IBlockRegistrant extends IRegistrant<Block> {
                 } else if (!field.isAnnotationPresent(ConstructBlock.class)) {
                     continue;
                 }
-                if (!Block.class.isAssignableFrom(field.getType())) {
+                Class<?> type = field.getType();
+                if (!Block.class.isAssignableFrom(type) && !BlockPresenter.class.isAssignableFrom(type)) {
                     continue;
                 }
                 field.setAccessible(true);
                 if (field.get(null) != null) {
                     continue;
                 }
-                name = field.getName();
+                target = field;
+                break;
             }
-            if (name == null) {
+            if (target == null) {
                 throw new NoSuchFieldException("Field annotated with ConstructBlock was not found in class " + clazz.getName());
             }
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
-        return name;
+        return target;
     }
 }

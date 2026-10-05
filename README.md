@@ -153,6 +153,17 @@ can also take the BE's constructor (as a lambda) and a `Block` varargs to constr
 based on a constructor and their `BlockBehaviour$Properties`. Note that `BlockBehaviour$Properties#setId`
 is called for you.
 
+An `ItemRegistrant` or `DelayedItemRegistrant` can also be created and obtained, depending on the type.
+
+`registerAndPresent` returns a `BlockPresenter` that contains the `Block` and its `ResourceKey` (and its
+`BlockItemId` in supported versions). Annotating a `BlockPresenter` with `ConstructItem` will attempt
+Item registration according to the rules listed in the Items section of this documentation. Note that
+`IItemRegistrant#registerFromAnnotations` ignores `BlockPresenter` fields.
+
+The `ConstructBlock` annotation can be used on a `Block` or `BlockPresenter` field to allow registration
+of the block without specifying a String for the name. Applying this to a class will unlock this behaviour
+for all fields.
+
 In 26.2, `createId` methods are available to create `BlockItemId`s.
 
 </details>

@@ -31,6 +31,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import org.jspecify.annotations.Nullable;
 import survivalblock.atmosphere.registrar.Registrant;
 import survivalblock.atmosphere.registrar.annotation.ConstructItem;
 
@@ -88,7 +89,8 @@ public interface IItemRegistrant extends IRegistrant<Item> {
     //? if >=26.2
     @Deprecated(since = "Minecraft 26.2")
     default <T extends Item, S extends Item.Properties> T register(Block block, Function<S, T> itemFunction, S settings) {
-        T item = this.register(block.builtInRegistryHolder().key()./*? <1.21.11 {*/ /*location() *//*?} else {*/ identifier() /*?}*/.getPath(), itemFunction, settings);
+        //~ if >=1.21.11 'location()' -> 'identifier()'
+        T item = this.register(block.builtInRegistryHolder().key().identifier().getPath(), itemFunction, settings);
         if (item instanceof BlockItem blockItem) {
             blockItem.registerBlocks(Item.BY_BLOCK, blockItem);
         }
@@ -180,38 +182,44 @@ public interface IItemRegistrant extends IRegistrant<Item> {
                 block = (Block) obj;
                 *///?}
 
-                Item.Properties settings = new Item.Properties();
-                //? if >1.21.1 {
-                if (useBlockTranslation) {
-                    settings.useBlockDescriptionPrefix();
-                }
-                //?}
-
-                Constructor<? extends Item> constructor = blockItemClass.getConstructor(Block.class, Item.Properties.class);
-
-                Function<Item.Properties, Item> creator = properties -> {
-                    try {
-                        return constructor.newInstance(block, properties);
-                    } catch (ReflectiveOperationException e) {
-                        throw new RuntimeException(e);
-                    }
-                };
-
-                Item item;
-                //? if >=26.2 {
-                if (id == null) {
-                    item = this.register(block, creator, settings);
-                } else {
-                    item = this.register(id, creator, settings);
-                }
-                //?} else {
-                /*item = this.register(block, creator, settings);
-                 *///?}
+                Item item = this.constructItem(useBlockTranslation, blockItemClass, block /*? >=26.2 {*/, id/*?}*/);
 
                 builder.put(block, item);
-            } catch (ReflectiveOperationException ignored) {
+            } catch (ReflectiveOperationException e) {
+                throw new RuntimeException(e);
             }
         }
         return builder.build();
+    }
+
+    default Item constructItem(boolean useBlockTranslation, Class<? extends Item> blockItemClass, Block block/*? >=26.2 {*/, @Nullable BlockItemId id/*?}*/) throws NoSuchMethodException {
+        Item.Properties settings = new Item.Properties();
+        //? if >1.21.1 {
+        if (useBlockTranslation) {
+            settings.useBlockDescriptionPrefix();
+        }
+        //?}
+
+        Constructor<? extends Item> constructor = blockItemClass.getConstructor(Block.class, Item.Properties.class);
+
+        Function<Item.Properties, Item> creator = properties -> {
+            try {
+                return constructor.newInstance(block, properties);
+            } catch (ReflectiveOperationException e) {
+                throw new RuntimeException(e);
+            }
+        };
+
+        Item item;
+        //? if >=26.2 {
+        if (id == null) {
+            item = this.register(block, creator, settings);
+        } else {
+            item = this.register(id, creator, settings);
+        }
+        //?} else {
+        /*item = this.register(block, creator, settings);
+         *///?}
+        return item;
     }
 }
