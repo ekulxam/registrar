@@ -109,7 +109,7 @@ public interface IBlockRegistrant extends IRegistrant<Block> {
          *///?}
         if (item) {
             try {
-                this.getOrCreateItemRegistrant().constructItem(/*? >=26.2 {*/constructItem.useBlockTranslation(),/*?}*/ constructItem.constructor(), block/*? >=26.2 {*/, ids/*?}*/);
+                this.getOrCreateItemRegistrant().constructItem(/*? >1.21.1 {*/constructItem.useBlockTranslation(),/*?}*/ constructItem.constructor(), block/*? >=26.2 {*/, ids/*?}*/);
             } catch (ReflectiveOperationException e) {
                 throw new RuntimeException(e);
             }
