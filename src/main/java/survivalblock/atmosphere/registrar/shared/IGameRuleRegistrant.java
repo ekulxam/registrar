@@ -34,11 +34,12 @@ import net.fabricmc.fabric.api.gamerule.v1.rule.DoubleRule;
 import net.fabricmc.fabric.api.gamerule.v1.rule.EnumRule;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.GameRules;
+import org.jspecify.annotations.Nullable;
 *///?} else {
-import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.gamerules.GameRule;
 import net.minecraft.world.level.gamerules.GameRuleCategory;
 import net.minecraft.world.level.gamerules.GameRules;
+import org.jspecify.annotations.Nullable;
 //?}
 
 @SuppressWarnings("unused")
@@ -54,6 +55,33 @@ public interface IGameRuleRegistrant extends IRegistrant<GameRule<?>> {
         //? >=1.21.11
         return this.register(name, builder.build());
     }
+
+    //~ if >=1.21.11 'GameRules.@Nullable Category' -> '@Nullable GameRuleCategory' {
+    @SuppressWarnings("UnusedReturnValue")
+    default IGameRuleRegistrant specifyDefaultCategory(@Nullable GameRuleCategory category) {
+        //? if <26 {
+        /*if (this.getDefaultCustomCategory() != null) {
+            throw new IllegalStateException("A default custom category is already present!");
+        }
+        *///?}
+        return this;
+    }
+
+    @Nullable GameRuleCategory getDefaultCategory();
+    //~}
+
+    //? if <26 {
+    /*@SuppressWarnings("UnusedReturnValue")
+    default IGameRuleRegistrant specifyDefaultCategory(@Nullable CustomGameRuleCategory category) {
+        if (this.getDefaultCategory() != null) {
+            throw new IllegalStateException("A default category is already present!");
+        }
+        return this;
+    }
+
+    @Nullable
+    CustomGameRuleCategory getDefaultCustomCategory();
+    *///?}
 
     //? if <1.21.11 {
     /*@Override
@@ -72,7 +100,7 @@ public interface IGameRuleRegistrant extends IRegistrant<GameRule<?>> {
     }
 
     default GameRules.Key<GameRules.BooleanValue> registerBoolean(String name, boolean defaultValue) {
-        return this.register(name, GameRuleFactory.createBooleanRule(defaultValue));
+        return this.maybeApplyCategory(name, GameRuleFactory.createBooleanRule(defaultValue));
     }
 
     default GameRules.Key<GameRules.BooleanValue> registerBoolean(String name, GameRules.Category category, boolean defaultValue) {
@@ -84,7 +112,7 @@ public interface IGameRuleRegistrant extends IRegistrant<GameRule<?>> {
     }
 
     default GameRules.Key<DoubleRule> registerDouble(String name, double defaultValue) {
-        return this.register(name, GameRuleFactory.createDoubleRule(defaultValue));
+        return this.maybeApplyCategory(name, GameRuleFactory.createDoubleRule(defaultValue));
     }
 
     default GameRules.Key<DoubleRule> registerDouble(String name, GameRules.Category category, double defaultValue) {
@@ -96,7 +124,7 @@ public interface IGameRuleRegistrant extends IRegistrant<GameRule<?>> {
     }
 
     default GameRules.Key<DoubleRule> registerDouble(String name, double defaultValue, double min, double max) {
-        return this.register(name, GameRuleFactory.createDoubleRule(defaultValue, min, max));
+        return this.maybeApplyCategory(name, GameRuleFactory.createDoubleRule(defaultValue, min, max));
     }
 
     default GameRules.Key<DoubleRule> registerDouble(String name, GameRules.Category category, double defaultValue, double min, double max) {
@@ -108,7 +136,7 @@ public interface IGameRuleRegistrant extends IRegistrant<GameRule<?>> {
     }
 
     default <E extends Enum<E>> GameRules.Key<EnumRule<E>> registerEnum(String name, E defaultValue) {
-        return this.register(name, GameRuleFactory.createEnumRule(defaultValue));
+        return this.maybeApplyCategory(name, GameRuleFactory.createEnumRule(defaultValue));
     }
 
     default <E extends Enum<E>> GameRules.Key<EnumRule<E>> registerEnum(String name, CustomGameRuleCategory category, E defaultValue) {
@@ -121,7 +149,7 @@ public interface IGameRuleRegistrant extends IRegistrant<GameRule<?>> {
 
     @SuppressWarnings("unchecked")
     default <E extends Enum<E>> GameRules.Key<EnumRule<E>> registerEnum(String name, E defaultValue, E... supportedValues) {
-        return this.register(name, GameRuleFactory.createEnumRule(defaultValue));
+        return this.maybeApplyCategory(name, GameRuleFactory.createEnumRule(defaultValue));
     }
 
     @SuppressWarnings("unchecked")
@@ -141,26 +169,38 @@ public interface IGameRuleRegistrant extends IRegistrant<GameRule<?>> {
     default <T extends GameRules.Value<T>> GameRules.Key<T> register(String name, CustomGameRuleCategory category, GameRules.Type<T> type) {
         return GameRuleRegistry.register(this.id(name).toString(), category, type);
     }
+
+    default <T extends GameRules.Value<T>> GameRules.Key<T> maybeApplyCategory(String name, GameRules.Type<T> type) {
+        GameRules.Category category = this.getDefaultCategory();
+        if (category != null) {
+            return this.register(name, category, type);
+        }
+        CustomGameRuleCategory custom = this.getDefaultCustomCategory();
+        if (custom != null) {
+            return this.register(name, custom, type);
+        }
+        return this.register(name, type);
+    }
     *///?} else {
     default GameRule<Boolean> registerBoolean(String name, boolean defaultValue) {
-        return this.register(name, GameRuleBuilder.forBoolean(defaultValue));
+        return this.register(name, this.maybeApplyCategory(GameRuleBuilder.forBoolean(defaultValue)));
     }
 
     default GameRule<Double> registerDouble(String name, double defaultValue) {
-        return this.register(name, GameRuleBuilder.forDouble(defaultValue));
+        return this.register(name, this.maybeApplyCategory(GameRuleBuilder.forDouble(defaultValue)));
     }
 
     default GameRule<Double> registerDouble(String name, double defaultValue, double min, double max) {
-        return this.register(name, GameRuleBuilder.forDouble(defaultValue).range(min, max));
+        return this.register(name, this.maybeApplyCategory(GameRuleBuilder.forDouble(defaultValue).range(min, max)));
     }
 
     default <E extends Enum<E>> GameRule<E> registerEnum(String name, E defaultValue) {
-        return this.register(name, GameRuleBuilder.forEnum(defaultValue));
+        return this.register(name, this.maybeApplyCategory(GameRuleBuilder.forEnum(defaultValue)));
     }
 
     @SuppressWarnings("unchecked")
     default <E extends Enum<E>> GameRule<E> registerEnum(String name, E defaultValue, E... supportedValues) {
-        return this.register(name, GameRuleBuilder.forEnum(defaultValue).supportedValues(supportedValues));
+        return this.register(name, this.maybeApplyCategory(GameRuleBuilder.forEnum(defaultValue).supportedValues(supportedValues)));
     }
 
     //? if <26 {
@@ -205,6 +245,20 @@ public interface IGameRuleRegistrant extends IRegistrant<GameRule<?>> {
     @SuppressWarnings("unchecked")
     default <E extends Enum<E>> GameRule<E> registerEnum(String name, GameRuleCategory category, E defaultValue, E... supportedValues) {
         return this.register(name, GameRuleBuilder.forEnum(defaultValue).supportedValues(supportedValues).category(category));
+    }
+
+    default <T> GameRuleBuilder<T> maybeApplyCategory(GameRuleBuilder<T> builder) {
+        GameRuleCategory category = this.getDefaultCategory();
+        if (category != null) {
+            return builder.category(category);
+        }
+        //? if <26 {
+        /*CustomGameRuleCategory custom = this.getDefaultCustomCategory();
+        if (custom != null) {
+            return builder.category(custom);
+        }
+        *///?}
+        return builder;
     }
     //?}
 

@@ -24,17 +24,25 @@
 //? if >=1.21.11 {
 package survivalblock.atmosphere.registrar.delayed;
 
+//? if <26
+//import net.fabricmc.fabric.api.gamerule.v1.CustomGameRuleCategory;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.gamerules.GameRule;
+import net.minecraft.world.level.gamerules.GameRuleCategory;
 import net.minecraft.world.level.gamerules.GameRules;
+import org.jspecify.annotations.Nullable;
 import survivalblock.atmosphere.registrar.shared.IGameRuleRegistrant;
 
 import java.util.function.Function;
 
 @SuppressWarnings("unused")
 public class DelayedGameRuleRegistrant extends DelayedRegistrant<GameRule<?>> implements IGameRuleRegistrant {
+    protected @Nullable GameRuleCategory defaultCategory;
+    //? if <26
+    //protected @Nullable CustomGameRuleCategory defaultCustomCategory;
+
     protected DelayedGameRuleRegistrant(String modId, Registry<GameRule<?>> registry) {
         super(modId, registry);
     }
@@ -50,6 +58,32 @@ public class DelayedGameRuleRegistrant extends DelayedRegistrant<GameRule<?>> im
     public DelayedGameRuleRegistrant(Function<String, Identifier> idFunction) {
         this(idFunction, BuiltInRegistries.GAME_RULE);
     }
+
+    @Override
+    public @Nullable GameRuleCategory getDefaultCategory() {
+        return this.defaultCategory;
+    }
+
+    @Override
+    public DelayedGameRuleRegistrant specifyDefaultCategory(@Nullable GameRuleCategory category) {
+        IGameRuleRegistrant.super.specifyDefaultCategory(category);
+        this.defaultCategory = category;
+        return this;
+    }
+
+    //? if <26 {
+    /*@Override
+    public @Nullable CustomGameRuleCategory getDefaultCustomCategory() {
+        return this.defaultCustomCategory;
+    }
+
+    @Override
+    public DelayedGameRuleRegistrant specifyDefaultCategory(@Nullable CustomGameRuleCategory category) {
+        IGameRuleRegistrant.super.specifyDefaultCategory(category);
+        this.defaultCustomCategory = category;
+        return this;
+    }
+    *///?}
 
     public static boolean getBoolean(GameRules gameRules, GameRule<Boolean> booleanRule) {
         return IGameRuleRegistrant.getBoolean(gameRules, booleanRule);

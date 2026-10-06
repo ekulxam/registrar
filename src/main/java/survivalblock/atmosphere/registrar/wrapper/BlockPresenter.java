@@ -32,8 +32,12 @@ import net.minecraft.world.level.block.Block;
 //? if >=26.2
 import org.jspecify.annotations.Nullable;
 
+//? if >=26.2
+import java.util.Objects;
+import java.util.function.Supplier;
+
 @SuppressWarnings("ClassCanBeRecord")
-public class BlockPresenter<T extends Block> implements ItemLike {
+public class BlockPresenter<T extends Block> implements ItemLike, Supplier<T> {
     protected final T block;
     protected final ResourceKey<Block> resourceKey;
     //? if >=26.2 {
@@ -61,10 +65,20 @@ public class BlockPresenter<T extends Block> implements ItemLike {
     public BlockItemId getBlockItemId() {
         return this.blockItemId;
     }
+
+    @SuppressWarnings("unused")
+    public BlockItemId getBlockItemIdOrThrow() {
+        return Objects.requireNonNull(this.blockItemId);
+    }
     //?}
 
     @Override
     public Item asItem() {
         return this.block.asItem();
+    }
+
+    @Override
+    public T get() {
+        return this.block;
     }
 }
